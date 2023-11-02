@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY ./app /app
 
-RUN npm install && npm install @esbuild/linux-x64
+RUN npm install
 
 EXPOSE 5173
