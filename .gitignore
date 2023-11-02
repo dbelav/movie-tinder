@@ -112,3 +112,8 @@ tmp/
 
 #PyCharm
 .idea/
+
+#Frontend
+
+node_modules/
+frontend/build/
