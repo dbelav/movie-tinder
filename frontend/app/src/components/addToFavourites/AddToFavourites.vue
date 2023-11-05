@@ -7,7 +7,7 @@ interface Iprops {
 }
 
 const props = defineProps<Iprops>();
-console.log(props)
+
 </script>
 
 <template>
@@ -23,9 +23,6 @@ console.log(props)
     align-items: flex-start;
     padding: 15px;
     gap: 10px;
-
-
-    // background: linear-gradient(98.85deg, #FFFFFF 3.36%, rgba(255, 255, 255, 0) 238.16%);
     background-image: url("../../assets/heart.png");
     background-size: no-repeat;
     background-position: center;

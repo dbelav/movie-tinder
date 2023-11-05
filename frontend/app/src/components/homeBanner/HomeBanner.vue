@@ -76,7 +76,6 @@ import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
         margin-right: 14px;
       }
     }
-
   }
 }
 </style>
