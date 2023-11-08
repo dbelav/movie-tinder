@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import './main.scss'
 import LeftNavbar from './components/leftnavbar/LeftNavbar.vue'
 import TopNavbar from './components/topNavbar/TopNavbar.vue'
 import MainPage from './views/mainPage/MainPage.vue'
+import { RouterView } from 'vue-router'
+
+import './main.scss'
+
+
 
 
 </script>
@@ -12,9 +16,8 @@ import MainPage from './views/mainPage/MainPage.vue'
     <LeftNavbar />
     <div class="appMainContainer">
       <TopNavbar />
-      <MainPage />
+      <RouterView />
     </div>
-
   </div>
 </template>
 
