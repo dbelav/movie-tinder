@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import MovieCard from '../movieCard/MovieCard.vue';
+import { defineProps } from 'vue';
+import { IMovie } from '../../types/types'
 
+
+const props = defineProps<{ trendingMovies: IMovie[] }>();
 
 </script>
 
@@ -9,14 +13,7 @@ import MovieCard from '../movieCard/MovieCard.vue';
         <div class="trendingContainer">
             <h2>Trending</h2>
             <div class="trendingContainerCards">
-                <MovieCard name="asdfsadf" year="2022" genre="asdf asdf asdf"
-                    image="https://images.wallpaperscraft.ru/image/single/ulitsa_noch_mokryj_155637_1920x1080.jpg" />
-                    <MovieCard name="asdfsadf" year="2022" genre="asdf asdf asdf"
-                    image="https://images.wallpaperscraft.ru/image/single/ulitsa_noch_mokryj_155637_1920x1080.jpg" />
-                    <MovieCard name="asdfsadf" year="2022" genre="asdf asdf asdf"
-                    image="https://images.wallpaperscraft.ru/image/single/ulitsa_noch_mokryj_155637_1920x1080.jpg" />
-                    <MovieCard name="asdfsadf" year="2022" genre="asdf asdf asdf"
-                    image="https://images.wallpaperscraft.ru/image/single/ulitsa_noch_mokryj_155637_1920x1080.jpg" />
+                <MovieCard :dataMovie="movie" width="26%" v-for="(movie, index) in props.trendingMovies" :key="index" />
             </div>
         </div>
     </div>
@@ -30,11 +27,16 @@ import MovieCard from '../movieCard/MovieCard.vue';
 
     .trendingContainer {
         width: 90%;
+        display: flex;
+        flex-wrap: wrap;
 
         .trendingContainerCards{
+            width: 100%;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
         }
+
     }
 }
 </style>

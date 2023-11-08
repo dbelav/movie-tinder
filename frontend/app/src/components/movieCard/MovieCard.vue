@@ -1,29 +1,25 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
+import type { IMovie } from '../../types/types'
+import UseForGenres from '../../hooks/UseForGenres.vue';
 
 interface Iprops {
     width?: string;
     height?: string;
-    name: string;
-    year: string;
-    genre: string;
-    image: string
 }
 
-const props = defineProps<Iprops>();
+const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
 
 </script>
 
 <template>
-    <div class="movieCard" :style="{ width: props.width, height: props.height, 'background-image': `url(${props.image})` }">
+    <div class="movieCard"
+        :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.poster_url})` }">
         <AddToFavourites class="addToFavourites" width="50px" height="50px" />
         <div class="movieCardbody">
-            <h3>{{ props.genre }}</h3>
-            <span>{{ props.year + ' | ' + props.genre }}</span>
-
+            <UseForGenres :genres="props.dataMovie.genres" />
         </div>
-
     </div>
 </template>
 
@@ -40,6 +36,7 @@ const props = defineProps<Iprops>();
     justify-content: space-between;
     border-radius: 20px;
     border: 1px;
+    margin: 20px 0;
 
 
     .movieCardbody {
@@ -57,7 +54,8 @@ const props = defineProps<Iprops>();
             margin-bottom: 5px;
             padding-left: 10px;
         }
-        span{
+
+        span {
             padding-left: 10px;
         }
     }

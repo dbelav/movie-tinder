@@ -1,34 +1,35 @@
 <script setup lang="ts">
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
+import { defineProps } from 'vue';
+import { IMovie } from '../../types/types'
+import UseForGenres from '../../hooks/UseForGenres.vue';
+
+const props = defineProps<{ trendingMovie: IMovie }>();
 
 </script>
 
 <template>
-  <div class="homeBanner">
+  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.poster_url})` }">
     <div class="homeBannerBody">
       <div class="homeBannerBodyTitle">
-        <span>Insider</span>
+        <span>{{ props.trendingMovie.title }}</span>
       </div>
       <div class="homeBannerBodyInfo">
-        <span>2022 | Comedy horror | 1 Season</span>
+        <UseForGenres :genres="props.trendingMovie.genres" />
       </div>
       <div class="homeBannerBodyLink">
         <div class="homeBannerBodyLinkButton">
           <a>Watch Now</a>
         </div>
-
         <AddToFavourites width="67px" height="54px" />
       </div>
-
     </div>
-
   </div>
 </template>
 
 <style scoped lang="scss">
 .homeBanner {
   height: 500px;
-  background-image: url('https://images.wallpaperscraft.ru/image/single/ulitsa_noch_mokryj_155637_1920x1080.jpg');
   background-size: no-repeat;
   background-position: center;
   background-size: cover;
