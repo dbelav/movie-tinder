@@ -30,6 +30,7 @@ import './main.scss'
 
   .appMainContainer {
     width: 80%;
+    padding-left: 20%;
   }
 }
 </style>

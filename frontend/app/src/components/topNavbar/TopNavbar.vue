@@ -23,11 +23,12 @@
 
 <style scoped lang="scss">
 .topNavbarContainer {
-    width: 100%;
+    width: 80%;
     height: 100px;
     display: flex;
     align-items: center;
     color: #fff;
+    position: fixed;
 
 
 

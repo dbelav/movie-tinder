@@ -1,13 +1,13 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { IMovie } from "../types/types";
+import { ApiResponse } from "../types/types";
 
 export const useHomePageStore = defineStore("homePage", () => {
-  const trendingData = ref<IMovie[]>([]);
+  const trendingData = ref<ApiResponse>();
   const trendingDataLoading = ref(false);
   const trendingDataError = ref(false);
 
-  function getData<T extends IMovie[]>(payload: T) {
+  function getData<T extends ApiResponse>(payload: T) {
     trendingDataLoading.value = false;
     trendingData.value = payload;
   }

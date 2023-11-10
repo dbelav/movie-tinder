@@ -1,6 +1,9 @@
 export const useHttp = () => {
 
-    const request = async (url: string, method = 'GET', body = null, headers = {'Content-Type': 'application/json'}) => {
+    const request = async (url: string, method = 'GET', body = null, headers =  {
+		'X-RapidAPI-Key': 'cb3637ae29msh9ba573a7f5d36d6p14aa1ejsn9b20e0c28a6a',
+		'X-RapidAPI-Host': 'moviesdatabase.p.rapidapi.com'
+	}) => {
 
         try {
             const response = await fetch(url, {method, body, headers});

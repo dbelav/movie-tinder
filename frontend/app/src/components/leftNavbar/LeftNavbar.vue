@@ -40,6 +40,8 @@
     color: #fff;
     font-size: 18px;
     box-shadow: 2px 0px 90px 0px #6100C266;
+    // position: absolute;
+    position: fixed;
 
 
 

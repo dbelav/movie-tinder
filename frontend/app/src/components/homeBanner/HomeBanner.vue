@@ -9,13 +9,12 @@ const props = defineProps<{ trendingMovie: IMovie }>();
 </script>
 
 <template>
-  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.poster_url})` }">
+  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.primaryImage?.url})` }">
     <div class="homeBannerBody">
       <div class="homeBannerBodyTitle">
-        <span>{{ props.trendingMovie.title }}</span>
+        <span>{{ props.trendingMovie.originalTitleText.text }}</span>
       </div>
       <div class="homeBannerBodyInfo">
-        <UseForGenres :genres="props.trendingMovie.genres" />
       </div>
       <div class="homeBannerBodyLink">
         <div class="homeBannerBodyLinkButton">

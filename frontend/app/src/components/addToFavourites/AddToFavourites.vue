@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import Heart from '../../assets/Heart.vue';
 
 interface Iprops {
     width: string;
@@ -12,23 +13,21 @@ const props = defineProps<Iprops>();
 
 <template>
     <div class="addToFavourites">
+
         <button class="addToFavouritesButton" :style="{ width: props.width, height: props.height }">
+            <Heart />
         </button>
     </div>
 </template>
 <style scoped lang="scss">
 .addToFavouritesButton {
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 15px;
-    gap: 10px;
-    background-image: url("../../assets/heart.png");
-    background-size: no-repeat;
-    background-position: center;
-    background-size: cover;
+
+    justify-content: center;
+    align-items: center;
     backdrop-filter: blur(10px);
     border-radius: 14px;
+    padding: 0;
 
 }
 </style>
