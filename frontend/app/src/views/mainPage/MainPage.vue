@@ -13,7 +13,7 @@ const { request } = useHttp()
 onMounted(async () => {
     store.dataLoading()
 
-    const response  = await request('https://moviesdatabase.p.rapidapi.com/titles?startYear=1990&list=most_pop_movies&page=1&limit=8') as Promise<ApiResponse>
+    const response  = await request('https://moviesdatabase.p.rapidapi.com/titles?startYear=1990&list=most_pop_movies&page=1&limit=9') as Promise<ApiResponse>
     console.log(response)
 
     if((await response).results.length > 0){
