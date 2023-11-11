@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
 import { defineProps } from 'vue';
-import { IMovie } from '../../types/types'
+import { IMovie } from '../../types/miniInfoTypes'
 import UseForGenres from '../../hooks/UseForGenres.vue';
 
 const props = defineProps<{ trendingMovie: IMovie }>();

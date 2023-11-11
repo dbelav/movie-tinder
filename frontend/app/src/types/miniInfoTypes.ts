@@ -1,4 +1,4 @@
-interface Image {
+export interface Image {
   id: string;
   width: number;
   height: number;
@@ -10,7 +10,7 @@ interface Image {
   __typename: string;
 }
 
-interface TitleType {
+export interface TitleType {
   text: string;
   id: string;
   isSeries: boolean;
@@ -18,18 +18,18 @@ interface TitleType {
   __typename: string;
 }
 
-interface TitleText {
+export interface TitleText {
   text: string;
   __typename: string;
 }
 
-interface YearRange {
+export interface YearRange {
   year: number;
   endYear: number | null;
   __typename: string;
 }
 
-interface ReleaseDate {
+export interface ReleaseDate {
   day: number | null;
   month: number | null;
   year: number;
@@ -47,7 +47,7 @@ export interface IMovie {
   releaseDate: ReleaseDate | null;
 }
 
-export interface ApiResponse {
+export interface ApiResponseMini {
   page: number;
   next: string;
   entries: number;

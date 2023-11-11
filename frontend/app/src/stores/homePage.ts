@@ -1,13 +1,13 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { ApiResponse } from "../types/types";
+import { ApiResponseMini } from "../types/miniInfoTypes";
 
 export const useHomePageStore = defineStore("homePage", () => {
-  const trendingData = ref<ApiResponse>();
+  const trendingData = ref<ApiResponseMini>();
   const trendingDataLoading = ref(false);
   const trendingDataError = ref(false);
 
-  function getData<T extends ApiResponse>(payload: T) {
+  function getData<T extends ApiResponseMini>(payload: T) {
     trendingDataLoading.value = false;
     trendingData.value = payload;
   }

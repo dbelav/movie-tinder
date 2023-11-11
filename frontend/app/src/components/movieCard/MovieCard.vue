@@ -1,8 +1,11 @@
-<script setup lang="ts">
+div<script setup lang="ts">
 import { defineProps } from 'vue';
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
-import type { IMovie } from '../../types/types'
-import UseForGenres from '../../hooks/UseForGenres.vue';
+import type { IMovie } from '../../types/miniInfoTypes'
+import { RouterLink } from 'vue-router';
+import { useMovieItem } from '../../stores/movieItem';
+// import { useLocalStorage } from '@vueuse/core'
+
 
 interface Iprops {
     width?: string;
@@ -10,6 +13,8 @@ interface Iprops {
 }
 
 const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
+
+const movieId = useMovieItem()
 
 const formatActors = (actors: string | null) => {
     if (actors && actors.length > 3) {
@@ -20,23 +25,28 @@ const formatActors = (actors: string | null) => {
     }
 };
 
+function goToMovieInfo(id: string) {
+    // useLocalStorage('currentIdMovie', id)
+    movieId.addCurrentIdMovie(id)
+}
+
 </script>
 
 <template>
     <div class="movieCard"
         :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.primaryImage?.url})` }">
-        <div class="movieCardbody">
-            <div class="movieCardbodyTopContainer">
-                <h3>{{ props.dataMovie.originalTitleText.text }}</h3>
-            </div>
-            <div class="movieCardbodyBottomContainer">
-                <div>{{ formatActors(props.dataMovie.primaryImage.caption.plainText) }}</div>
-                <div class="movieCardbodyBottomContainerYear">{{ props.dataMovie.releaseDate?.year }}</div>
-            </div>
-            <!-- <AddToFavourites class="addToFavourites" width="50px" height="50px" /> -->
-        </div>
+        <RouterLink :to="`/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody" @click="goToMovieInfo(props.dataMovie.id)" >
+            <div class=" movieCardbodyTopContainer">
+            <h3>{{ props.dataMovie.originalTitleText.text }}</h3>
     </div>
-</template>
+    <div class="movieCardbodyBottomContainer">
+        <div class="movieCardbodyBottomContainerActors"><span>{{
+            formatActors(props.dataMovie.primaryImage.caption.plainText) }}</span></div>
+        <div class="movieCardbodyBottomContainerYear">{{ props.dataMovie.releaseDate?.year }}</div>
+    </div>
+    <!-- <AddToFavourites class="addToFavourites" width="50px" height="50px" /> -->
+    </RouterLink>
+</div></template>
 
 <style scoped lang="scss">
 .movieCard {
@@ -52,18 +62,11 @@ const formatActors = (actors: string | null) => {
     border-radius: 15px;
     border: 1px;
     margin: 20px 0;
-    // transition: 3s;
-    color: #fff;
-
 
 
     &:hover {
         .movieCardbody {
             opacity: 1;
-
-            // h3 {
-            //     opacity: 1;
-            // }
         }
     }
 
@@ -79,12 +82,15 @@ const formatActors = (actors: string | null) => {
         opacity: 0;
         background-color: rgba(0, 0, 0, 0.411);
         transition: 0.3s;
+        text-decoration: none;
+        color: #fff;
 
         .movieCardbodyTopContainer {
             height: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
+
 
             h3 {
                 margin: 0;
@@ -103,8 +109,13 @@ const formatActors = (actors: string | null) => {
             align-items: center;
             justify-content: space-between;
             height: 50%;
-            align-self: flex-end;
             padding: 0 5px;
+
+            .movieCardbodyBottomContainerActors {
+                display: flex;
+                justify-content: center;
+                width: 90%;
+            }
 
             .movieCardbodyBottomContainerYear {
                 margin-bottom: 10px;
