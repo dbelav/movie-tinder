@@ -1,10 +1,10 @@
-div<script setup lang="ts">
+<script setup lang="ts">
 import { defineProps } from 'vue';
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
 import type { IMovie } from '../../types/miniInfoTypes'
 import { RouterLink } from 'vue-router';
 import { useMovieItem } from '../../stores/movieItem';
-// import { useLocalStorage } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
 
 
 interface Iprops {
@@ -16,6 +16,8 @@ const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }
 
 const movieId = useMovieItem()
 
+const localStorage = useStorage('currentIdMovie', '');
+
 const formatActors = (actors: string | null) => {
     if (actors && actors.length > 3) {
         return actors.split(', ').slice(0, 3).join(', ') + '...';
@@ -25,8 +27,10 @@ const formatActors = (actors: string | null) => {
     }
 };
 
+
+
 function goToMovieInfo(id: string) {
-    // useLocalStorage('currentIdMovie', id)
+    localStorage.value = id
     movieId.addCurrentIdMovie(id)
 }
 

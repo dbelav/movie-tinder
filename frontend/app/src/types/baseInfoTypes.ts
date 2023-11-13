@@ -18,7 +18,7 @@ interface TitleTypeBase extends TitleType {
   canHaveEpisodes: boolean;
 }
 
-interface Genre {
+export interface Genre {
   text: string;
   id: string;
   __typename: string;
