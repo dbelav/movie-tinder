@@ -8,7 +8,7 @@ const store = useMovieItem();
 const showPhoto = ref(false);
 const currentActorPhoto = ref('');
 
-function showActorPhoto(photoUrl) {
+function showActorPhoto(photoUrl: string) {
     currentActorPhoto.value = photoUrl;
     showPhoto.value = true;
 }
@@ -54,7 +54,6 @@ function hideActorPhoto() {
           .movieActorsItemLink{
             color: #fff;
           }
-
 
           .movieActorsItemImage {
               width: 100%;

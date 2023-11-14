@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Genre } from '../../types/baseInfoTypes';
+import type { Genre } from '../../types/baseInfoTypes';
+import type { DirectorCategory } from '../../types/directors'
 import { UseConvertDuration } from '../../hooks/UseConvertDuration'
 import Star from '../../assets/Star.vue'
 import { useMovieItem } from '../../stores/movieItem'
@@ -15,6 +16,17 @@ function renderGenres(genres: Genre[]): string {
     return genresToString.join(', ');
 }
 
+function renderDirectors(directors: DirectorCategory[] | undefined): string {
+    if (directors) {
+        const directorsToString = directors.map((director) => director.credits[0].name.nameText.text)
+        return directorsToString.join(', ');
+    } else {
+        return ''
+    }
+
+}
+
+
 function renderDate(year: Date, month: Date, day: Date): string {
     if (typeof year === 'number' && typeof month === 'number' && typeof day === 'number') {
         return `${day}-${month > 9 ? month : '0' + month}-${year}`;
@@ -27,11 +39,15 @@ const releaseData = renderDate(
     movieStore.movieItemData?.results.releaseDate?.month,
     movieStore.movieItemData?.results.releaseDate?.day
 );
-</script>?
+
+const budgetAmount = movieStore.budgetMovieData?.results.productionBudget.budget?.amount
+
+const budgetworldwideGross = movieStore.budgetMovieData?.results.worldwideGross.total?.amount
+</script>
 
 <template>
     <div class="movieItemContainerInfo" v-if="movieStore.movieItemData">
-        
+
         <div class="movieItemInnerContainerInfo">
             <div class="movieItemInfoTitleRating">
                 <h2>{{ movieStore.movieItemData.results.titleText.text }}</h2>
@@ -41,19 +57,32 @@ const releaseData = renderDate(
                 </div>
             </div>
 
-            <div class="movieItemInfoDateTimeGenres">
-                <div class="movieItemInfoDate movieItemInfoDateTimeGenresItem">Release date: <span>{{ releaseData }}</span>
+            <div class="movieItemInfoBody">
+                <div class="movieItemInfoDate movieItemInfoBodyItem">
+                    Release date: <span>{{ releaseData }}</span>
                 </div>
-                <div class="movieItemInfoGenres movieItemInfoDateTimeGenresItem">Genres: <span>{{
-                    renderGenres(movieStore.movieItemData.results.genres.genres) }}</span></div>
-                <div class="movieItemInfoTime movieItemInfoDateTimeGenresItem">Duration: <span>{{
-                    UseConvertDuration(movieStore.movieItemData.results.runtime.seconds) }}</span></div>
+                <div class="movieItemInfoGenres movieItemInfoBodyItem">
+                    Genres: <span>{{ renderGenres(movieStore.movieItemData.results.genres.genres) }}</span>
+                </div>
+                <div class="movieItemInfoTime movieItemInfoBodyItem">Duration:
+                    <span>{{ UseConvertDuration(movieStore.movieItemData.results.runtime.seconds) }}</span>
+                </div>
+                <div class="movieItemInfoBudget movieItemInfoBodyItem" v-if="budgetAmount">
+                    Budget: <span>{{ budgetAmount + ' USD' }}</span>
+                </div>
+                <div class="movieItemInfoFees movieItemInfoBodyItem" v-if="budgetworldwideGross">
+                    Worldwide box-office: <span>{{ budgetworldwideGross + ' USD' }}</span>
+                </div>
+                <div class="movieItemInfoDirector movieItemInfoBodyItem">
+                    Directors: <span>{{ renderDirectors(movieStore.directorsMovieData?.results.directors) }}</span>
+                </div>
+                <MovieItemActors />
             </div>
 
             <div class="movieItemInfoDescribe">
                 <p>{{ movieStore.movieItemData.results.plot.plotText.plainText }}</p>
             </div>
-            <MovieItemActors />
+            
         </div>
     </div>
 </template>
@@ -92,8 +121,9 @@ const releaseData = renderDate(
             }
         }
 
-        .movieItemInfoDateTimeGenres {
-            .movieItemInfoDateTimeGenresItem {
+        .movieItemInfoBody {
+
+            .movieItemInfoBodyItem {
                 margin-bottom: 15px;
                 font-weight: 600;
 

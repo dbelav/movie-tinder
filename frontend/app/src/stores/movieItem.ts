@@ -2,10 +2,12 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type { ApiResponsBase } from "../types/baseInfoTypes";
 import type { Actors } from "../types/actorsCast";
-import type { BudgetMovie } from "../types/budjet";
+import type { BudgetMovie } from "../types/budget";
+import type { Directors } from "../types/directors";
 
 export const useMovieItem = defineStore("MovieItem", () => {
   const currentIdMovie = ref<string>("");
+  
   const movieItemData = ref<ApiResponsBase>();
   const movieItemLoading = ref(false);
   const movieItemError = ref(false);
@@ -18,9 +20,13 @@ export const useMovieItem = defineStore("MovieItem", () => {
   const budgetMovieLoading = ref(false);
   const budgetMovieError = ref(false);
 
+  const directorsMovieData = ref<Directors>();
+  const directorsMovieLoading = ref(false);
+  const directorsMovieError = ref(false);
+
   const get6Actors = computed(() =>
-  actorsMovieData.value?.results.cast.edges.splice(0, 6)
-);
+    actorsMovieData.value?.results.cast.edges.splice(0, 6)
+  );
 
   function addCurrentIdMovie(payload: string) {
     currentIdMovie.value = payload;
@@ -52,17 +58,30 @@ export const useMovieItem = defineStore("MovieItem", () => {
     actorsMovieError.value = true;
   }
 
-  function getbudgetMovie<T extends BudgetMovie>(payload: T) {
+  function getBudgetMovie<T extends BudgetMovie>(payload: T) {
     budgetMovieLoading.value = false;
     budgetMovieData.value = payload;
   }
 
-  function isLoadingbudgetMovie() {
+  function isLoadingBudgetMovie() {
     budgetMovieLoading.value = true;
   }
 
-  function isErrorbudgetMovie() {
+  function isErrorBudgetMovie() {
     budgetMovieError.value = true;
+  }
+
+  function getDirectorsMovie<T extends Directors>(payload: T) {
+    directorsMovieLoading.value = false;
+    directorsMovieData.value = payload;
+  }
+
+  function isLoadingDirectorsMovie() {
+    directorsMovieLoading.value = true;
+  }
+
+  function isErrorDirectorsMovie() {
+    directorsMovieError.value = true;
   }
 
   return {
@@ -84,8 +103,14 @@ export const useMovieItem = defineStore("MovieItem", () => {
     budgetMovieData,
     budgetMovieLoading,
     budgetMovieError,
-    getbudgetMovie,
-    isLoadingbudgetMovie,
-    isErrorbudgetMovie
+    getBudgetMovie,
+    isLoadingBudgetMovie,
+    isErrorBudgetMovie,
+    directorsMovieData,
+    directorsMovieLoading,
+    directorsMovieError,
+    getDirectorsMovie,
+    isLoadingDirectorsMovie,
+    isErrorDirectorsMovie
   };
 });
