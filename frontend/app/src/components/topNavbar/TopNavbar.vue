@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
 
 
 </script>
@@ -8,7 +9,7 @@
         <div class="topNavbarContainerInner">
             <div class="topNavbarContainerInnerLeft">
                 <div class="topNavbarContainerInnerLeftItem">Something</div>
-                <div class="topNavbarContainerInnerLeftItem">Something</div>
+                <RouterLink to="/actors/" class="topNavbarContainerInnerLeftItem">Actors</RouterLink>
                 <div class="topNavbarContainerInnerLeftItem">Something</div>
             </div>
 
@@ -51,6 +52,8 @@
 
         .topNavbarContainerInnerLeftItem {
             padding: 10px;
+            text-decoration: none;
+            color: #fff;
         }
     }
 

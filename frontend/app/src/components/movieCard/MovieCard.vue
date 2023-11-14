@@ -7,11 +7,6 @@ import { useMovieItem } from '../../stores/movieItem';
 import { useStorage } from '@vueuse/core'
 
 
-interface Iprops {
-    width?: string;
-    height?: string;
-}
-
 const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
 
 const movieId = useMovieItem()
@@ -27,8 +22,6 @@ const formatActors = (actors: string | null) => {
     }
 };
 
-
-
 function goToMovieInfo(id: string) {
     localStorage.value = id
     movieId.addCurrentIdMovie(id)
@@ -39,7 +32,7 @@ function goToMovieInfo(id: string) {
 <template>
     <div class="movieCard"
         :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.primaryImage?.url})` }">
-        <RouterLink :to="`/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody" @click="goToMovieInfo(props.dataMovie.id)" >
+        <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody" @click="goToMovieInfo(props.dataMovie.id)" >
             <div class=" movieCardbodyTopContainer">
             <h3>{{ props.dataMovie.originalTitleText.text }}</h3>
     </div>

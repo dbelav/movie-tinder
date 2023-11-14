@@ -26,6 +26,6 @@ export const useHomePageStore = defineStore("homePage", () => {
     trendingDataError,
     getData,
     dataLoading,
-    dataError,
+    dataError
   };
 });

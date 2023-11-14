@@ -26,7 +26,6 @@ function renderDirectors(directors: DirectorCategory[] | undefined): string {
 
 }
 
-
 function renderDate(year: Date, month: Date, day: Date): string {
     if (typeof year === 'number' && typeof month === 'number' && typeof day === 'number') {
         return `${day}-${month > 9 ? month : '0' + month}-${year}`;

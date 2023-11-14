@@ -13,7 +13,6 @@ import { UseGetMovie } from '../../hooks/UseGetMovie';
 
 const movieStore = useMovieItem()
 
-
 const storage = useStorage('currentIdMovie', '');
 
 onMounted(async () => {
