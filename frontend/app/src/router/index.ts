@@ -15,7 +15,7 @@ const router = createRouter({
       component: MovieItem
     },
     {
-      path: '/actors',
+      path: '/actors/:page',
       component: Actors
     },
   ],

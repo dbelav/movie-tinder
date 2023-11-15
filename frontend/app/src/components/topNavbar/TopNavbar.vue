@@ -9,7 +9,7 @@ import { RouterLink } from 'vue-router';
         <div class="topNavbarContainerInner">
             <div class="topNavbarContainerInnerLeft">
                 <div class="topNavbarContainerInnerLeftItem">Something</div>
-                <RouterLink to="/actors/" class="topNavbarContainerInnerLeftItem">Actors</RouterLink>
+                <RouterLink to="/actors/1" class="topNavbarContainerInnerLeftItem">Actors</RouterLink>
                 <div class="topNavbarContainerInnerLeftItem">Something</div>
             </div>
 
@@ -31,8 +31,6 @@ import { RouterLink } from 'vue-router';
     color: #fff;
     position: fixed;
 
-
-
     .topNavbarContainerInner {
         width: 100%;
         display: flex;
@@ -47,7 +45,6 @@ import { RouterLink } from 'vue-router';
         .topNavbarContainerInnerRight {
             display: flex;
             padding-right: 30px;
-
         }
 
         .topNavbarContainerInnerLeftItem {
@@ -56,6 +53,5 @@ import { RouterLink } from 'vue-router';
             color: #fff;
         }
     }
-
 }
 </style>

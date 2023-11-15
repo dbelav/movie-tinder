@@ -1,15 +1,30 @@
 <script lang="ts" setup>
 import type { ActorsApiResponse } from '../../types/actorsPage'
 import { useActors } from '../../stores/actors'
-import { onMounted } from 'vue'
+import { onMounted, onUpdated } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
+import { ref } from 'vue'
 
 
 const store = useActors()
 const { request } = useHttp()
+const router = useRouter();
 
-async function getActors(page: number) {
+const currentIdPage = ref(router.currentRoute.value.params.page as string);
+
+function renderPage(currentPage: number) {
+    const arrPage = [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
+    const minPage = 1;
+    const maxPage = 51;
+
+    const filteredPages = arrPage.filter(page => page >= minPage && page <= maxPage);
+    const result = [minPage, ...filteredPages, maxPage];
+
+    return [...new Set(result)];
+}
+
+async function getActors(page: string) {
     store.isLoadingActors()
 
     const response = await request(`https://moviesdatabase.p.rapidapi.com/actors?page=${page}&limit=30`) as Promise<ActorsApiResponse>
@@ -22,8 +37,14 @@ async function getActors(page: number) {
     console.log(response)
 }
 
+const navigateToPage = async (page: string) => {
+    await getActors(page);
+    router.push(`/actors/${page}`);
+    currentIdPage.value = page
+};
+
 onMounted(async () => {
-    getActors(2)
+    getActors(currentIdPage.value)
 
 })
 </script>
@@ -42,9 +63,11 @@ onMounted(async () => {
                     <h2>{{ actor.primaryName }}</h2>
                 </div>
             </a>
-
-            <div class="actorsPageNumber" v-for="index in 51">
-                <a href="#"></a>
+            <div class="actorsPageNumberContainer">
+                <div class="actorsPageNumberItem" v-for="page in renderPage(+currentIdPage)">
+                    <button @click="navigateToPage(page.toString())"
+                        :class="[page === +currentIdPage ? 'actorsPageNumberItemActive' : '']">{{ page }}</button>
+                </div>
             </div>
         </div>
     </div>
@@ -87,8 +110,6 @@ onMounted(async () => {
                 }
             }
 
-
-
             .actorItemImage {
                 width: 100%;
                 transition: 0.3s;
@@ -97,13 +118,35 @@ onMounted(async () => {
                     width: 100%;
                 }
             }
+        }
 
-            .actorItemName {}
+        .actorsPageNumberContainer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
+            .actorsPageNumberItem {
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0 7px;
+
+                button {
+                    text-decoration: none;
+                    color: #fff;
+                    padding: 20px;
+                    border: 2px solid #fff;
+                    background-color: transparent;
+                }
+
+                .actorsPageNumberItemActive {
+                    border: 3px solid #fff;
+                    padding: 22px;
+                }
+            }
         }
     }
-
-
-
 }
 </style>
