@@ -2,8 +2,12 @@
 import { useMovieItem } from '../../stores/movieItem';
 import { ref } from 'vue'
 import { useStorage } from '@vueuse/core'
+import { RouterLink } from 'vue-router';
+
 
 const store = useMovieItem();
+
+const localStorage = useStorage('currentActorId', '');
 
 const showPhoto = ref(false);
 const currentActorPhoto = ref('');
@@ -16,6 +20,7 @@ function showActorPhoto(photoUrl: string) {
 function hideActorPhoto() {
     showPhoto.value = false;
 }
+
 </script> 
 
 <template v-if="store.actorsMovieData">
@@ -25,10 +30,13 @@ function hideActorPhoto() {
             <div class="movieActorsItemImage" v-if="currentActorPhoto === actor.node.name.primaryImage?.url && showPhoto">
                 <img :src="currentActorPhoto" alt="">
             </div>
-            <a class="movieActorsItemLink" href="#" v-if="actor.node.name && actor.node.name.primaryImage"
-                @mouseover="showActorPhoto(actor.node.name.primaryImage.url)" @mouseleave="hideActorPhoto">
+            <RouterLink :to="`/actors/actorInformation/${actor.node.name.nameText.text.replace(/\s/g, '')}`" class="movieActorsItemLink"  v-if="actor.node.name && actor.node.name.primaryImage"
+                @mouseover="showActorPhoto(actor.node.name.primaryImage.url)" 
+                @mouseleave="hideActorPhoto"
+                @click="localStorage = `${actor.node.name.id}`">
+                
 
-                {{ index < 5 ? (actor.node.name.nameText.text + ',') : actor.node.name.nameText.text }} </a>
+                {{ index < 5 ? (actor.node.name.nameText.text + ',') : actor.node.name.nameText.text }} </RouterLink>
         </div>
     </div>
 </template>

@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import type { ActorsApiResponse } from '../../types/actorsPage'
 import { useActors } from '../../stores/actors'
-import { onMounted, onUpdated } from 'vue'
+import { onMounted } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
-import { RouterLink, useRouter } from 'vue-router';
+import { useRouter, RouterLink } from 'vue-router';
 import { ref } from 'vue'
+import { useStorage } from '@vueuse/core'
 
 
-const store = useActors()
+
 const { request } = useHttp()
+const store = useActors()
 const router = useRouter();
+const localStorage = useStorage('currentActorId', '');
 
 const currentIdPage = ref(router.currentRoute.value.params.page as string);
 
@@ -45,7 +48,6 @@ const navigateToPage = async (page: string) => {
 
 onMounted(async () => {
     getActors(currentIdPage.value)
-
 })
 </script>
 
@@ -55,14 +57,17 @@ onMounted(async () => {
             <div class="actorsContainerInnerTitle">
                 <h1 class="actorsContainerInnerTitle">All Actors</h1>
             </div>
-            <a href="#" class="actorItem" v-for="actor in store.actorsData?.results">
+            <RouterLink :to="`/actors/actorInformation/${actor.primaryName.replace(/\s/g, '')}`"
+                v-for="actor in store.actorsData?.results" @click="localStorage = `${actor.nconst}`" class="actorItem">
+
                 <div class="actorItemImage">
                     <img src="../../assets/actorAvatar.jpg" alt="">
                 </div>
                 <div class="actorItemName">
                     <h2>{{ actor.primaryName }}</h2>
                 </div>
-            </a>
+            </RouterLink>
+
             <div class="actorsPageNumberContainer">
                 <div class="actorsPageNumberItem" v-for="page in renderPage(+currentIdPage)">
                     <button @click="navigateToPage(page.toString())"

@@ -23,7 +23,6 @@ function renderDirectors(directors: DirectorCategory[] | undefined): string {
     } else {
         return ''
     }
-
 }
 
 function renderDate(year: Date, month: Date, day: Date): string {
