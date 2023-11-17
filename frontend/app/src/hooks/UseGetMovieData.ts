@@ -6,7 +6,7 @@ interface ApiRespons<T>{
 
 const { request } = useHttp()
 
-export async function UseGetMovie<T>(url: string, loading: Function, getData: Function, error: Function) {
+export async function UseGetMovieData<T>(url: string, loading: Function, getData: Function, error: Function) {
     loading()
 
     const response = await request(url) as ApiRespons<T>

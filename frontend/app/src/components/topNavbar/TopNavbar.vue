@@ -8,7 +8,7 @@ import { RouterLink } from 'vue-router';
     <div class="topNavbarContainer">
         <div class="topNavbarContainerInner">
             <div class="topNavbarContainerInnerLeft">
-                <div class="topNavbarContainerInnerLeftItem">Something</div>
+                <RouterLink to="/movies" class="topNavbarContainerInnerLeftItem">Movies</RouterLink>
                 <RouterLink to="/actors/1" class="topNavbarContainerInnerLeftItem">Actors</RouterLink>
                 <div class="topNavbarContainerInnerLeftItem">Something</div>
             </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-// import LogoSVG from '../../assets/logo.vue'
 
 
 </script>

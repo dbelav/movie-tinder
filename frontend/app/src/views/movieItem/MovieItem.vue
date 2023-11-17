@@ -6,38 +6,32 @@ import MovieItemInfo from '../../components/movieItemInfo/MovieItemInfo.vue'
 import { useStorage } from '@vueuse/core'
 import type { Actors } from '../../types/actorsCast'
 import type { BudgetMovie } from "../../types/budget";
-import type {Directors} from '../../types/directors'
-import { UseGetMovie } from '../../hooks/UseGetMovie';
-
+import type { Directors } from '../../types/directors'
+import { UseGetMovieData } from '../../hooks/UseGetMovieData';
 
 
 const movieStore = useMovieItem()
 
 const storage = useStorage('currentIdMovie', '');
 
+
 onMounted(async () => {
-    await UseGetMovie<ApiResponsBase>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=base_info`,
+    await UseGetMovieData<ApiResponsBase>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=base_info`,
         movieStore.isLoadingMovieItem,
         movieStore.getDataMovieItem,
         movieStore.isErrorMovieItem)
-})
 
-onMounted(async () => {
-    await UseGetMovie<Actors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=extendedCast`,
+    await UseGetMovieData<Actors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=extendedCast`,
         movieStore.isLoadingActorsMovie,
         movieStore.getActorsMovie,
         movieStore.isErrorActorsMovie)
-})
 
-onMounted(async () => {
-    await UseGetMovie<BudgetMovie>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=revenue_budget`,
+    await UseGetMovieData<BudgetMovie>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=revenue_budget`,
         movieStore.isLoadingBudgetMovie,
         movieStore.getBudgetMovie,
         movieStore.isErrorBudgetMovie)
-})
 
-onMounted(async () => {
-    await UseGetMovie<Directors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=creators_directors_writers`,
+    await UseGetMovieData<Directors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=creators_directors_writers`,
         movieStore.isLoadingDirectorsMovie,
         movieStore.getDirectorsMovie,
         movieStore.isErrorDirectorsMovie)

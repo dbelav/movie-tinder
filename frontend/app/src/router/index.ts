@@ -3,6 +3,7 @@ import MainPage from "../views/mainPage/MainPage.vue";
 import MovieItem from '../views/movieItem/MovieItem.vue'
 import Actors from '../views/actors/Actors.vue'
 import ActorInfo from '../components/actorInfo/ActorInfo.vue'
+import ListMovies from '../views/listMovies/ListMovies.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,6 +11,10 @@ const router = createRouter({
     {
       path: "/",
       component: MainPage,
+    },
+    {
+      path: "/movies",
+      component: ListMovies,
     },
     {
       path: '/movies/:id',

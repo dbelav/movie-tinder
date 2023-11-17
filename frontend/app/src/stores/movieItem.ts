@@ -5,6 +5,7 @@ import type { Actors } from "../types/actorsCast";
 import type { BudgetMovie } from "../types/budget";
 import type { Directors } from "../types/directors";
 
+
 export const useMovieItem = defineStore("MovieItem", () => {
   const currentIdMovie = ref<string>("");
   
