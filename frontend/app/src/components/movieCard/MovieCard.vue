@@ -30,7 +30,7 @@ function goToMovieInfo(id: string) {
 </script>
 
 <template>
-    <div class="movieCard"
+    <div class="movieCard" v-if="props.dataMovie.primaryImage"
         :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.primaryImage?.url})` }">
         <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody" @click="goToMovieInfo(props.dataMovie.id)" >
             <div class=" movieCardbodyTopContainer">

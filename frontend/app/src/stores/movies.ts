@@ -2,8 +2,13 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type { MoviesGenres } from "../types/moviesGenres";
 import type { MoviesList } from "../types/moviesList";
+import type { ApiResponseMini } from "../types/miniInfoTypes";
 
 export const useMovies = defineStore("MovieItem", () => {
+  const moviesData = ref<ApiResponseMini>();
+  const moviesLoading = ref(false);
+  const moviesError = ref(false);
+
   const moviesGenresData = ref<MoviesGenres>();
   const moviesGenresLoading = ref(false);
   const moviesGenresError = ref(false);
@@ -12,8 +17,22 @@ export const useMovies = defineStore("MovieItem", () => {
   const moviesListLoading = ref(false);
   const moviesListError = ref(false);
 
+
   const currentGenre = ref("");
   const currentListItem = ref("");
+
+  function getDataMovies<T extends ApiResponseMini>(payload: T) {
+    moviesLoading.value = false;
+    moviesData.value = payload;
+  }
+
+  function isLoadingMovies() {
+    moviesLoading.value = true;
+  }
+
+  function isErrorMovies() {
+    moviesError.value = true;
+  }
 
   function getDataMoviesGenres<T extends MoviesGenres>(payload: T) {
     moviesGenresLoading.value = false;
@@ -45,12 +64,17 @@ export const useMovies = defineStore("MovieItem", () => {
     currentGenre.value = payload;
   }
 
-  function setCurrentListItem(payload: string){
-    currentListItem.value = payload
+  function setCurrentListItem(payload: string) {
+    currentListItem.value = payload;
   }
 
-
   return {
+    moviesData,
+    moviesLoading,
+    moviesError,
+    getDataMovies,
+    isLoadingMovies,
+    isErrorMovies,
     moviesGenresData,
     moviesGenresLoading,
     moviesGenresError,
@@ -66,6 +90,6 @@ export const useMovies = defineStore("MovieItem", () => {
     currentGenre,
     currentListItem,
     setCurrentGenre,
-    setCurrentListItem
+    setCurrentListItem,
   };
 });
