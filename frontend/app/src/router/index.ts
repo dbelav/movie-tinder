@@ -13,7 +13,7 @@ const router = createRouter({
       component: MainPage,
     },
     {
-      path: "/movies",
+      path: "/movies/",
       component: ListMovies,
     },
     {

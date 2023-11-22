@@ -10,12 +10,15 @@ import type { Directors } from '../../types/directors'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData';
 
 
+
 const movieStore = useMovieItem()
 
 const storage = useStorage('currentIdMovie', '');
 
-
 onMounted(async () => {
+
+        console.log(movieStore.isLoadingMovieItem)
+
     await UseGetMovieData<ApiResponsBase>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=base_info`,
         movieStore.isLoadingMovieItem,
         movieStore.getDataMovieItem,
@@ -35,8 +38,7 @@ onMounted(async () => {
         movieStore.isLoadingDirectorsMovie,
         movieStore.getDirectorsMovie,
         movieStore.isErrorDirectorsMovie)
-})
-
+    })
 
 </script>
 

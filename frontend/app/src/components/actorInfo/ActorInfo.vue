@@ -70,11 +70,7 @@ onUpdated(async () => {
                         <strong> Primary Profession: </strong>
                         <span>{{ store.actorInfoData.results.primaryProfession?.split(',').join(', ') }}</span>
                     </div>
-
-
                 </div>
-
-
             </div>
             <div class="actorInfoBodyTitles" v-if="store.actorTitlesData">
                 <div class="actorInfoBodyTitlesItem" v-for="movie in store.actorTitlesData?.results">

@@ -17,9 +17,11 @@ export const useMovies = defineStore("MovieItem", () => {
   const moviesListLoading = ref(false);
   const moviesListError = ref(false);
 
-
-  const currentGenre = ref("");
-  const currentListItem = ref("");
+  const previousPage = ref([]);
+  const BASE_API_URL = ref("https://moviesdatabase.p.rapidapi.com");
+  const urlParams = ref(
+    "/titles?limit=30&page=1"
+  );
 
   function getDataMovies<T extends ApiResponseMini>(payload: T) {
     moviesLoading.value = false;
@@ -60,12 +62,19 @@ export const useMovies = defineStore("MovieItem", () => {
     moviesListError.value = true;
   }
 
-  function setCurrentGenre(payload: string) {
-    currentGenre.value = payload;
+  function setPreviousPage(payload: string) {
+    previousPage.value.unshift(payload);
+  }
+  function deletePreviousPage() {
+    previousPage.value.splice(0, 1);
   }
 
-  function setCurrentListItem(payload: string) {
-    currentListItem.value = payload;
+  function deleteAllPreviousPages() {
+    previousPage.value = [];
+  }
+
+  function setUrlParams(payload: string){
+    urlParams.value += `${payload}`
   }
 
   return {
@@ -87,9 +96,12 @@ export const useMovies = defineStore("MovieItem", () => {
     getDataMoviesList,
     isLoadingMoviesList,
     isErrorMoviesList,
-    currentGenre,
-    currentListItem,
-    setCurrentGenre,
-    setCurrentListItem,
+    previousPage,
+    setPreviousPage,
+    deletePreviousPage,
+    deleteAllPreviousPages,
+    BASE_API_URL,
+    urlParams,
+    setUrlParams
   };
 });

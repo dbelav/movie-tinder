@@ -6,7 +6,7 @@ import type { BudgetMovie } from "../types/budget";
 import type { Directors } from "../types/directors";
 
 
-export const useMovieItem = defineStore("MovieItem", () => {
+export const useMovieItem = defineStore("Movie", () => {
   const currentIdMovie = ref<string>("");
   
   const movieItemData = ref<ApiResponsBase>();
@@ -41,7 +41,6 @@ export const useMovieItem = defineStore("MovieItem", () => {
   function isLoadingMovieItem() {
     movieItemLoading.value = true;
   }
-
   function isErrorMovieItem() {
     movieItemError.value = true;
   }

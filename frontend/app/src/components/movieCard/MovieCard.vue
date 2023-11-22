@@ -3,18 +3,15 @@ import { defineProps } from 'vue';
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
 import type { IMovie } from '../../types/miniInfoTypes'
 import { RouterLink } from 'vue-router';
-import { useMovieItem } from '../../stores/movieItem';
 import { useStorage } from '@vueuse/core'
 
 
 const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
 
-const movieId = useMovieItem()
-
 const localStorage = useStorage('currentIdMovie', '');
 
 const formatActors = (actors: string | null) => {
-    if (actors && actors.length > 3) {
+    if (actors && actors.length > 3) {  
         return actors.split(', ').slice(0, 3).join(', ') + '...';
     }
     else {
@@ -23,8 +20,8 @@ const formatActors = (actors: string | null) => {
 };
 
 function goToMovieInfo(id: string) {
+    console.log(id)
     localStorage.value = id
-    movieId.addCurrentIdMovie(id)
 }
 
 </script>
@@ -32,18 +29,20 @@ function goToMovieInfo(id: string) {
 <template>
     <div class="movieCard" v-if="props.dataMovie.primaryImage"
         :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.primaryImage?.url})` }">
-        <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody" @click="goToMovieInfo(props.dataMovie.id)" >
+        <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody"
+            @click="goToMovieInfo(props.dataMovie.id)">
             <div class=" movieCardbodyTopContainer">
-            <h3>{{ props.dataMovie.originalTitleText.text }}</h3>
+                <h3>{{ props.dataMovie.originalTitleText.text }}</h3>
+            </div>
+            <div class="movieCardbodyBottomContainer">
+                <div class="movieCardbodyBottomContainerActors"><span>{{
+                    formatActors(props.dataMovie.primaryImage.caption.plainText) }}</span></div>
+                <div class="movieCardbodyBottomContainerYear">{{ props.dataMovie.releaseDate?.year }}</div>
+            </div>
+            <!-- <AddToFavourites class="addToFavourites" width="50px" height="50px" /> -->
+        </RouterLink>
     </div>
-    <div class="movieCardbodyBottomContainer">
-        <div class="movieCardbodyBottomContainerActors"><span>{{
-            formatActors(props.dataMovie.primaryImage.caption.plainText) }}</span></div>
-        <div class="movieCardbodyBottomContainerYear">{{ props.dataMovie.releaseDate?.year }}</div>
-    </div>
-    <!-- <AddToFavourites class="addToFavourites" width="50px" height="50px" /> -->
-    </RouterLink>
-</div></template>
+</template>
 
 <style scoped lang="scss">
 .movieCard {
@@ -63,20 +62,21 @@ function goToMovieInfo(id: string) {
 
     &:hover {
         .movieCardbody {
-            opacity: 1;
+            display: flex;
         }
     }
 
     .movieCardbody {
         height: 100%;
-        display: flex;
+        max-width: 400px;
+        max-height: 400px;
+        display: none;
         flex-direction: column;
         align-items: center;
         width: 100%;
         border-radius: 15px;
         align-items: center;
         padding-left: -20px;
-        opacity: 0;
         background-color: rgba(0, 0, 0, 0.411);
         transition: 0.3s;
         text-decoration: none;
@@ -87,7 +87,6 @@ function goToMovieInfo(id: string) {
             display: flex;
             justify-content: center;
             align-items: center;
-
 
             h3 {
                 margin: 0;

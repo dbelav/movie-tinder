@@ -17,14 +17,14 @@ const localStorage = useStorage('currentActorId', '');
 const currentIdPage = ref(router.currentRoute.value.params.page as string);
 
 function renderPage(currentPage: number) {
-    const arrPage = [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
-    const minPage = 1;
-    const maxPage = 51;
+    const arrPage = [currentPage - 1, currentPage, currentPage + 1]
+    const minPage = 1
+    const maxPage = 50
 
-    const filteredPages = arrPage.filter(page => page >= minPage && page <= maxPage);
-    const result = [minPage, ...filteredPages, maxPage];
+    const filteredPages = arrPage.filter(page => page >= minPage && page <= maxPage)
+    const result = [minPage, ...filteredPages, maxPage]
 
-    return [...new Set(result)];
+    return [...new Set(result)]
 }
 
 async function getActors(page: string) {
@@ -42,7 +42,7 @@ async function getActors(page: string) {
 
 const navigateToPage = async (page: string) => {
     await getActors(page);
-    router.push(`/actors/${page}`);
+    router.push(`/actors/${page}`)
     currentIdPage.value = page
 };
 

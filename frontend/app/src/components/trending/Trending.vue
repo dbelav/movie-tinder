@@ -14,7 +14,7 @@ const props = defineProps<{ trendingMovies: IMovie[] }>();
             <h2>Trending</h2>
             <div class="trendingContainerCards">
                 <MovieCard :dataMovie="movie" width="26%" v-for="(movie, index) in props.trendingMovies" :key="index" />
-                <div class="trendingContainerCardsInvisible"></div>  <!-- for normal alignment with space-beetween -->
+                <div class="trendingContainerCardsInvisible"></div>
             </div>
         </div>
     </div>

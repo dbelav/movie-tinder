@@ -11,18 +11,15 @@ interface FilterParamsInner {
     url: string,
     value: string
 }
-
 type FilterParams = {
     [key: string]: FilterParamsInner;
 };
 
 const store = useMovies()
 
-const apiUrl = ref('https://moviesdatabase.p.rapidapi.com/titles?limit=30')
-const searchByYear = ref("");
-const searchFromYear = ref("");
-const searchToYear = ref("");
-const incDecSearch = ref("year.incr");
+const BASE_API_URL = ref('https://moviesdatabase.p.rapidapi.com/titles?limit=30&page=1')
+const searchKeyword = ref('')
+let timeoutSearch: NodeJS.Timeout | null = null
 
 
 const filterParams = ref<FilterParams>({
@@ -56,29 +53,56 @@ const filterParams = ref<FilterParams>({
         url: 'list=',
         value: ''
     }
+
 });
 async function searchByParams(urlApi: string) {
+    store.deleteAllPreviousPages()
+    let urlParams = ''
+
     for (const key in filterParams.value) {
-        const item = filterParams.value[key];
+        const item = filterParams.value[key]
         if (item.value) {
-            urlApi += `&${item.url}${item.value}`;
+            urlParams += `&${item.url}${item.value}`
         }
     }
+
+    store.setPreviousPage(`/titles?limit=30&page=1${urlParams}`)
+
     await UseGetMovieData<ApiResponseMini>(
-        urlApi,
+        `${urlApi}${urlParams}`,
         store.isLoadingMovies,
         store.getDataMovies,
         store.isErrorMovies
-    );
-    console.log(urlApi);
+    )
 }
 
-function clearFilters(filterName) {
+async function searchByName(urlApi: string) {
+    if (timeoutSearch !== null) {
+        clearTimeout(timeoutSearch);
+    }
+    if (searchKeyword.value.length > 0) {
+        timeoutSearch = setTimeout(async () => {
+            await UseGetMovieData<ApiResponseMini>(
+                `https://moviesdatabase.p.rapidapi.com/titles/search/title/${searchKeyword.value}?limit=30&page=1`,
+                store.isLoadingMovies,
+                store.getDataMovies,
+                store.isErrorMovies
+            );
+        }, 300);
+    }
+
+}
+
+function clearFilters(filterName: string) {
+    store.deleteAllPreviousPages()
+
     for (const key in filterParams.value) {
         if (filterParams.value[key].name === filterName) {
-            filterParams.value[key].value = '';
+            filterParams.value[key].value = ''
         }
     }
+
+    searchByParams(BASE_API_URL.value)
 }
 
 function toggleIncDecSearch() {
@@ -93,7 +117,6 @@ function toggleIncDecSearch() {
             <ul class="movieSortingGenresList">
                 <template v-for="genre in store.moviesGenresData.results">
                     <li class="movieSortingGenresListItem" v-if="genre">
-                        <!-- <button @click="filterParams.currentGenreSearch.value = genre" v-if="genre === filterParams.currentGenreSearch.value">{{ genre }}</button> -->
                         <button @click="filterParams.currentGenreSearch.value = genre"
                             :style="{ color: genre === filterParams.currentGenreSearch.value ? 'black' : '#fff' }">
                             {{ genre }}
@@ -109,43 +132,52 @@ function toggleIncDecSearch() {
                     <li class="movieSortingListItem">
                         <button class="movieSortingListItemButton"
                             @click="filterParams.currentListItemSearch.value = listItem"
-                            :style="{ color: listItem === filterParams.currentListItemSearch.value ? 'black' : '#fff' }"
-                            >{{ listItem }}
+                            :style="{ color: listItem === filterParams.currentListItemSearch.value ? 'black' : '#fff' }">{{
+                                listItem.replace(/_/g, ' ').replace(/\b\w/g, match => match.toUpperCase()) }}
                         </button>
                     </li>
                 </template>
             </ul>
         </div>
-
-        <div class="movieSortingDate">
-            <h2>Search by Year</h2>
-            <div class="movieSortingDateYear">
-                <form class="movieSortingDateYearForm">
-                    <input type="text" class="movieSortingDateYearInput" v-model="filterParams.searchByYear.value">
+        <div class="movieSearchSortingContainer">
+            <div class="movieSearchKeyword">
+                <h2>Search By Name</h2>
+                <form>
+                    <input type="text" class="movieSortInput" v-model="searchKeyword" @input="searchByName(BASE_API_URL)">
                 </form>
             </div>
-
-            <div class="movieSortingDateRangeYear">
-                <form class="movieSortingDateRangeYearForm" @submit.prevent>
-                    <input type="text" class="movieSortingDateRangeYearFrom" v-model="filterParams.searchFromYear.value">
-                    <input type="text" class="movieSortingDateRangeYearTo" v-model="filterParams.searchToYear.value">
-                    <button class="movieSortingButton" @click="toggleIncDecSearch()">
-                        {{ filterParams.incDecSearch.value }}</button>
-                </form>
-
-                <div class="movieSortingDateSearch">
-                    <button class="movieSortingButton" @click="searchByParams(apiUrl)">Search</button>
+            <div class="movieSortingDate">
+                <h2>Search by Year</h2>
+                <div class="movieSortingDateYear">
+                    <form class="movieSortingDateYearForm" @submit.prevent>
+                        <input type="text" class="movieSortInput" v-model="filterParams.searchByYear.value">
+                    </form>
                 </div>
-                <div class="movieSortingDateClear">
-                    <template v-for="filter in filterParams">
-                        <button class="movieSortingDateClearButton movieSortingButton" @click="clearFilters(filter.name)"
-                            v-if="filter.value && filter.name !== 'Search By Range'">
-                            <Delete class="movieSortingButtonDelete" /><span>{{ filter.name }}</span>
-                        </button>
-                    </template>
+
+                <div class="movieSortingDateRangeYear">
+                    <h2>Search by Year Range</h2>
+                    <form class="movieSortingDateRangeYearForm" @submit.prevent>
+                        <input type="text" class="movieSortInput" v-model="filterParams.searchFromYear.value">
+                        <input type="text" class="movieSortInput" v-model="filterParams.searchToYear.value">
+                        <button class="movieSortingButton" @click="toggleIncDecSearch()">
+                            {{ filterParams.incDecSearch.value }}</button>
+                    </form>
+
+                    <div class="movieSortingDateSearch">
+                        <button class="movieSortingButton" @click="searchByParams(BASE_API_URL)">Search</button>
+                    </div>
+                    <div class="movieSortingDateClear">
+                        <template v-for="filter in filterParams">
+                            <button class="movieSortingDateClearButton movieSortingButton"
+                                @click="clearFilters(filter.name)" v-if="filter.value && filter.name !== 'Search By Range'">
+                                <Delete class="movieSortingButtonDelete" /><span>{{ filter.name }}</span>
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -155,6 +187,7 @@ function toggleIncDecSearch() {
     display: flex;
     justify-content: space-between;
     background-color: #2e2e2e;
+    padding-right: 15px;
 
     .movieSortingGenres {
         width: 50%;
@@ -196,7 +229,6 @@ function toggleIncDecSearch() {
                 list-style: none;
                 margin: 7px;
                 display: flex;
-                // justify-content: center;
 
                 .movieSortingListItemButton {
                     background-color: transparent;
@@ -224,41 +256,57 @@ function toggleIncDecSearch() {
         padding: 0 10px;
     }
 
-    .movieSortingDate {
+    .movieSearchSortingContainer {
         color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
 
-        h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .movieSearchKeyword {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
         }
 
-        .movieSortingDateYear,
-        .movieSortingDateRangeYear {
-            margin-bottom: 20px;
+        .movieSortingDate {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
-            .movieSortingDateYearForm,
-            .movieSortingDateRangeYearForm {
-                display: flex;
-                align-items: center;
+            h2 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
 
-                input {
-                    height: 30px;
-                    border-radius: 7px;
-                    border: none;
-                    margin-right: 10px;
-                    padding: 5px;
-                    font-size: 18px;
+            .movieSortingDateYear,
+            .movieSortingDateRangeYear {
+                margin-bottom: 20px;
+
+                h2 {
+                    text-align: center;
+                }
+
+                .movieSortingDateYearForm,
+                .movieSortingDateRangeYearForm {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .movieSortingDateSearch {
+                    margin-top: 10px;
                 }
             }
+        }
 
-            .movieSortingDateSearch {
-                margin-top: 10px;
-            }
+        .movieSortInput {
+            height: 30px;
+            border-radius: 7px;
+            border: none;
+            margin-right: 10px;
+            padding: 5px;
+            font-size: 18px;
         }
     }
+
 
     .movieSortingDateClear {
         display: flex;
