@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  db:
+  database:
     image: postgres:16
     restart: always
     env_file:
@@ -25,7 +25,7 @@ services:
     environment:
       - WATCHFILES_FORCE_POLLING=true
     depends_on:
-      - db
+      - database
 
   frontend:
     build:
