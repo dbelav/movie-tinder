@@ -20,6 +20,8 @@ services:
       - 8000:8000
     volumes:
       - ./backend:/app
+    env_file:
+      - "./postgres.env"
     environment:
       - WATCHFILES_FORCE_POLLING=true
     depends_on:
