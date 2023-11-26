@@ -1,21 +1,23 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import LeftNavbar from './components/leftnavbar/LeftNavbar.vue'
-import TopNavbar from './components/topNavbar/TopNavbar.vue'
 import MainPage from './views/mainPage/MainPage.vue'
 import { RouterView } from 'vue-router'
-
 import './main.scss'
 
 
+const isOpenLeftNavbar = ref(false)
 
+function toggleNavbar() {
+    isOpenLeftNavbar.value = !isOpenLeftNavbar.value;
+}
 
 </script>
 
 <template>
   <div class="app">
-    <LeftNavbar />
-    <div class="appMainContainer">
-      <TopNavbar />
+    <LeftNavbar :isOpenLeftNavbar="isOpenLeftNavbar" :toggleNavbar="toggleNavbar"/>
+    <div class="appMainContainer" :class="{ 'appMainContainerOpen':  isOpenLeftNavbar}">
       <RouterView />
     </div>
   </div>
@@ -23,14 +25,17 @@ import './main.scss'
 
 <style scoped lang="scss">
 .app {
-
   display: flex;
   width: 100%;
   background: conic-gradient(from -1.54deg at 28.99% 107.28%, #191817 0deg, #37312A 175.51deg, #191817 342.49deg, #191817 360deg);
-
+  min-height: 100vh;
   .appMainContainer {
-    width: 80%;
-    padding-left: 20%;
+    width: 100%; 
+    padding-left: 10%;
+    transition: 0.3s;
+  }
+  .appMainContainerOpen {
+    padding-left: 15%;
   }
 }
 </style>

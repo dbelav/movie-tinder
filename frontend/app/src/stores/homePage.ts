@@ -4,7 +4,7 @@ import { ApiResponseMini } from "../types/miniInfoTypes";
 
 export const useHomePageStore = defineStore("homePage", () => {
   const trendingData = ref<ApiResponseMini>();
-  const trendingDataLoading = ref(false);
+  const trendingDataLoading = ref(true);
   const trendingDataError = ref(false);
 
   function getData<T extends ApiResponseMini>(payload: T) {

@@ -1,24 +1,36 @@
 <script setup lang="ts">
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
 import { defineProps } from 'vue';
-import { IMovie } from '../../types/miniInfoTypes'
-import UseForGenres from '../../hooks/UseForGenres.vue';
+import { ApiResponseMini } from '../../types/miniInfoTypes'
+import { RouterLink, useRoute } from 'vue-router';
+import { useStorage } from '@vueuse/core'
+import { Skeletor } from "vue-skeletor";
+import "vue-skeletor/dist/vue-skeletor.css";
 
-const props = defineProps<{ trendingMovie: IMovie }>();
 
+const props = defineProps<{ trendingMovie: ApiResponseMini | undefined, loading: boolean }>();
+const localStorage = useStorage('currentIdMovie', '');
+
+function goToMovieInfo(id: string) {
+  localStorage.value = id
+}
 </script>
 
 <template>
-  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.primaryImage?.url})` }">
+  <Skeletor class="homeBannerLoading" v-if="props.loading" />
+
+  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.results[0].primaryImage?.url})` }"
+    v-if="!props.loading && props.trendingMovie">
     <div class="homeBannerBody">
       <div class="homeBannerBodyTitle">
-        <span>{{ props.trendingMovie.originalTitleText.text }}</span>
+        <span>{{ props.trendingMovie.results[0].originalTitleText.text }}</span>
       </div>
       <div class="homeBannerBodyInfo">
       </div>
       <div class="homeBannerBodyLink">
         <div class="homeBannerBodyLinkButton">
-          <a>Watch Now</a>
+          <RouterLink :to="`/movies/${props.trendingMovie.results[0].originalTitleText.text.replace(/\s/g, '')}`"
+            @click="goToMovieInfo(props.trendingMovie.results[0].id)">Watch Now</RouterLink>
         </div>
         <AddToFavourites width="67px" height="54px" />
       </div>
@@ -27,8 +39,13 @@ const props = defineProps<{ trendingMovie: IMovie }>();
 </template>
 
 <style scoped lang="scss">
+.homeBannerLoading {
+  height: 700px;
+  border-radius: 0;
+}
+
 .homeBanner {
-  height: 500px;
+  height: 700px;
   background-size: no-repeat;
   background-position: center;
   background-size: cover;
@@ -36,6 +53,7 @@ const props = defineProps<{ trendingMovie: IMovie }>();
   flex-direction: column;
   justify-content: flex-end;
   color: #fff;
+  width: 100%;
 
   .homeBannerBody {
     margin-left: 100px;
@@ -63,7 +81,12 @@ const props = defineProps<{ trendingMovie: IMovie }>();
     .homeBannerBodyLink {
       display: flex;
 
+      .addToFavouritesButton {
+        position: static;
+      }
+
       .homeBannerBodyLinkButton {
+
         width: 139px;
         height: 54px;
         padding: 17px, 24px, 17px, 24px;
@@ -74,6 +97,11 @@ const props = defineProps<{ trendingMovie: IMovie }>();
         justify-content: center;
         align-items: center;
         margin-right: 14px;
+
+        a {
+          text-decoration: none;
+          color: #fff;
+        }
       }
     }
   }

@@ -7,6 +7,8 @@ import MovieCard from '../../components/movieCard/MovieCard.vue'
 import type { MoviesGenres } from '../../types/moviesGenres'
 import type { MoviesList } from '../../types/moviesList'
 import type { ApiResponseMini } from '../../types/miniInfoTypes'
+import { Skeletor } from "vue-skeletor";
+import "vue-skeletor/dist/vue-skeletor.css";
 
 
 const store = useMovies()
@@ -34,9 +36,8 @@ onMounted(async () => {
     store.setPreviousPage(store.urlParams)
 })
 
-
 async function clickNextPage() {
-    store.setPreviousPage(store.moviesData?.next)
+    store.setPreviousPage(store.moviesData.next)
 
     await UseGetMovieData<ApiResponseMini>(`${store.BASE_API_URL}${store.moviesData?.next}`,
         store.isLoadingMovies,
@@ -54,16 +55,16 @@ async function clickPreviousPage() {
     store.deletePreviousPage()
 }
 </script>
-
 <template>
     <div class="listMoviesContainer">
         <div class="listMoviesContainerInner">
-            <MovieSorting />
+            <Skeletor v-if="store.moviesListLoading || store.moviesGenresLoading" class="listMoviesContainerInnerLoading" />
+            <MovieSorting v-else-if="!store.moviesListLoading || !store.moviesGenresLoading" />
             <div class="listMovies">
-                <template v-for="movie in store.moviesData?.results">
-                    <MovieCard :dataMovie="movie" width="26%" />
+                <Skeletor class="listMoviesLoading" v-if="store.moviesLoading" v-for="item in 15"/>
+                <template v-for="movie in store.moviesData?.results" v-else-if="!store.moviesLoading">
+                    <MovieCard :dataMovie="movie" width="18%" />
                 </template>
-
             </div>
             <div class="listMoviesPagination">
                 <button @click="clickPreviousPage">Previous</button>
@@ -77,12 +78,24 @@ async function clickPreviousPage() {
 .listMoviesContainer {
     min-height: 100vh;
     width: 100%;
-    padding-top: 100px;
     display: flex;
     justify-content: center;
 
+    .listMoviesContainerInnerLoading {
+        width: 100%;
+        height: 500px;
+        border-radius: 0;
+    }
+
     .listMoviesContainerInner {
         width: 90%;
+        
+        .listMoviesLoading {
+            height: 300px;
+            width: 18%;
+            margin: 20px 0;
+            border-radius: 15px;
+        }
 
         .listMovies {
             display: flex;

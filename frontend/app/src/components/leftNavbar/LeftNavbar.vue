@@ -1,24 +1,50 @@
 <script setup lang="ts">
+import { RouterLink, useRoute } from 'vue-router';
+import BurgerNavbar from '../../assets/BurgerNavbar.vue';
+import { defineProps } from 'vue';
 
+const props = defineProps(['isOpenLeftNavbar', 'toggleNavbar'])
+const route = useRoute();
 
+function isRouteActive(path: string): boolean {
+    return route.path === path;
+}
 
 </script>
 
 <template>
-    <div class="leftNavbarContainer">
+    <div class="leftNavbarContainer" :class="{ 'leftNavbarContainerOpen': props.isOpenLeftNavbar }">
         <div class="leftNavbarContainerInner">
-            <div class="leftNavbarLogo leftNavbarContainerGeneral">
-                <!-- <LogoSVG /> -->
+            <div class="leftNavbarBurger">
+                <BurgerNavbar :isOpenLeftNavbar="props.isOpenLeftNavbar" :toggleNavbar="props.toggleNavbar" />
             </div>
             <div class="leftNavbarContainerLinksContainer">
                 <div class="leftNavbarLinks">
-                    <div class="leftNavbarLinksItem leftNavbarContainerGeneral">Home</div>
-                    <div class="leftNavbarLinksItem leftNavbarContainerGeneral">Favourites</div>
-                    <div class="leftNavbarLinksItem leftNavbarContainerGeneral">Trending</div>
-                    <div class="leftNavbarLinksItem leftNavbarContainerGeneral">Tinder</div>
+                    <RouterLink to="/" class="leftNavbarContainerGeneral"
+                        :class="{ 'active': isRouteActive('/'), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
+                        <img src="../../assets/mainPage.png" />
+                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Main Page</span>
+
+                    </RouterLink>
+                    <RouterLink to="/movies" class="leftNavbarContainerGeneral"
+                        :class="{ 'active': isRouteActive('/movies'), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
+                        <img src="../../assets/movie.png" />
+                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Movies</span>
+                    </RouterLink>
+                    <RouterLink to="/actors/1" class="leftNavbarContainerGeneral"
+                        :class="{ 'active': isRouteActive('/actors/1'), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
+                        <img src="../../assets/actor.png" />
+                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Actors</span>
+                    </RouterLink>
+                    <div class="leftNavbarContainerGeneral">
+                        <img src="../../assets/favorite.png" />
+                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Favourites</span>
+                    </div>
+                    <div class="leftNavbarContainerGeneral">
+                        <img src="../../assets/tinder.png" />
+                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Tinder</span>
+                    </div>
                 </div>
-
-
 
                 <div class="leftNavbarSettingLogout">
                     <div class="leftNavbarSettingLink leftNavbarContainerGeneral">Setting</div>
@@ -32,17 +58,15 @@
 
 <style scoped lang="scss">
 .leftNavbarContainer {
-    width: 20%;
+    width: 10%;
     height: 100vh;
     background-color: #21201E;
     display: flex;
     color: #fff;
     font-size: 18px;
     box-shadow: 2px 0px 90px 0px #6100C266;
-    // position: absolute;
     position: fixed;
-
-
+    transition: 0.3s;
 
     .leftNavbarContainerInner {
         width: 100%;
@@ -50,10 +74,10 @@
         display: flex;
         flex-direction: column;
 
-        padding-left: 25%;
+        margin-left: 5%;
 
-        .leftNavbarLogo {
-            margin-top: 50px;
+        .leftNavbarBurger {
+            margin-top: 5px;
             margin-bottom: 100px;
         }
 
@@ -63,14 +87,55 @@
             justify-content: space-between;
             height: 80%;
 
-            .leftNavbarContainerGeneral {
-                padding: 10px;
+            .leftNavbarLinks {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+
+                .leftNavbarContainerGeneral {
+                    padding: 10px;
+                    text-decoration: none;
+                    color: #fff;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    transition: 0.3s;
+
+                    img {
+                        margin-right: 10px;
+                        width: 40px;
+                        transition: 0.3s;
+                    }
+
+                    span {
+                        display: none;
+                    }
+
+
+                }
+
+                .leftNavbarContainerGeneralOpen {
+
+                    span {
+                        display: inline;
+                    }
+                    img {
+                        width: 32px;
+                    }
+
+                }
+
+                .leftNavbarContainerGeneral.active {
+                    background-color: #333;
+                }
             }
         }
-
-
-
-
     }
+}
+
+.leftNavbarContainerOpen {
+    width: 15%;
 }
 </style>

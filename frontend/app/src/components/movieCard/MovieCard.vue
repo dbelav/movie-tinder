@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
+import AddToFavourites from '../addToFavourites/AddToFavourites.vue'
 import type { IMovie } from '../../types/miniInfoTypes'
 import { RouterLink } from 'vue-router';
 import { useStorage } from '@vueuse/core'
 
 
 const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
-
 const localStorage = useStorage('currentIdMovie', '');
 
 const formatActors = (actors: string | null) => {
-    if (actors && actors.length > 3) {  
+    if (actors && actors.length > 3) {
         return actors.split(', ').slice(0, 3).join(', ') + '...';
     }
     else {
@@ -20,15 +19,14 @@ const formatActors = (actors: string | null) => {
 };
 
 function goToMovieInfo(id: string) {
-    console.log(id)
     localStorage.value = id
 }
-
 </script>
 
 <template>
     <div class="movieCard" v-if="props.dataMovie.primaryImage"
         :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.primaryImage?.url})` }">
+        <AddToFavourites class="addToFavourites" width="50px" height="50px" />
         <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody"
             @click="goToMovieInfo(props.dataMovie.id)">
             <div class=" movieCardbodyTopContainer">
@@ -39,7 +37,7 @@ function goToMovieInfo(id: string) {
                     formatActors(props.dataMovie.primaryImage.caption.plainText) }}</span></div>
                 <div class="movieCardbodyBottomContainerYear">{{ props.dataMovie.releaseDate?.year }}</div>
             </div>
-            <!-- <AddToFavourites class="addToFavourites" width="50px" height="50px" /> -->
+
         </RouterLink>
     </div>
 </template>
@@ -55,12 +53,22 @@ function goToMovieInfo(id: string) {
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-between;
+    position: relative;
     border-radius: 15px;
     border: 1px;
     margin: 20px 0;
 
+    .addToFavourites {
+        display: none;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
 
     &:hover {
+        .addToFavourites{
+            display: block;
+        }
         .movieCardbody {
             display: flex;
         }
@@ -68,8 +76,7 @@ function goToMovieInfo(id: string) {
 
     .movieCardbody {
         height: 100%;
-        max-width: 400px;
-        max-height: 400px;
+
         display: none;
         flex-direction: column;
         align-items: center;
@@ -120,10 +127,7 @@ function goToMovieInfo(id: string) {
         }
     }
 
-    .addToFavourites {
-        margin-top: 10px;
-        margin-right: 10px;
-    }
+
 
 }
 </style>

@@ -2,14 +2,14 @@
 import type { ActorsApiResponse } from '../../types/actorsPage'
 import { useActors } from '../../stores/actors'
 import { onMounted } from 'vue'
-import { useHttp } from '../../hooks/useHtpp'
-import { useRouter, RouterLink } from 'vue-router';
+import { UseGetMovieData } from '../../hooks/UseGetMovieData'
+import { useRouter, RouterLink } from 'vue-router'
 import { ref } from 'vue'
 import { useStorage } from '@vueuse/core'
+import { Skeletor } from "vue-skeletor"
+import "vue-skeletor/dist/vue-skeletor.css"
 
 
-
-const { request } = useHttp()
 const store = useActors()
 const router = useRouter();
 const localStorage = useStorage('currentActorId', '');
@@ -28,16 +28,11 @@ function renderPage(currentPage: number) {
 }
 
 async function getActors(page: string) {
-    store.isLoadingActors()
-
-    const response = await request(`https://moviesdatabase.p.rapidapi.com/actors?page=${page}&limit=30`) as Promise<ActorsApiResponse>
-
-    if ((await response).results) {
-        store.getDataActors(await response)
-    } else {
-        store.isErrorActors()
-    }
-    console.log(response)
+    await UseGetMovieData<ActorsApiResponse>(`https://moviesdatabase.p.rapidapi.com/actors?page=${page}&limit=30`,
+        store.isLoadingActors,
+        store.getDataActors,
+        store.isErrorActors
+    )
 }
 
 const navigateToPage = async (page: string) => {
@@ -52,12 +47,14 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="actorsContainer" v-if="store.actorsData">
+    <div class="actorsContainer">
         <div class="actorsContainerInner">
             <div class="actorsContainerInnerTitle">
                 <h1 class="actorsContainerInnerTitle">All Actors</h1>
             </div>
-            <RouterLink :to="`/actors/actorInformation/${actor.primaryName.replace(/\s/g, '')}`"
+            <Skeletor v-if="store.actorsLoading" class="actorItemLoading" v-for="item in 30"/>
+            <RouterLink v-else-if="!store.actorsLoading && store.actorsData"
+            :to="`/actors/actorInformation/${actor.primaryName.replace(/\s/g, '')}`"
                 v-for="actor in store.actorsData?.results" @click="localStorage = `${actor.nconst}`" class="actorItem">
 
                 <div class="actorItemImage">
@@ -80,8 +77,6 @@ onMounted(async () => {
 
 <style lang="scss">
 .actorsContainer {
-    min-height: 100vh;
-    padding-top: 100px;
     width: 100%;
     color: #fff;
     display: flex;
@@ -98,6 +93,13 @@ onMounted(async () => {
             margin-bottom: 50px;
             width: 100%;
             height: 100px;
+        }
+
+        .actorItemLoading{
+            width: 18%;
+            margin-bottom: 50px;
+            height: 300px;
+            border-radius: 0;
         }
 
         .actorItem {

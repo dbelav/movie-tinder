@@ -16,29 +16,34 @@ const movieStore = useMovieItem()
 const storage = useStorage('currentIdMovie', '');
 
 onMounted(async () => {
-
-        console.log(movieStore.isLoadingMovieItem)
-
     await UseGetMovieData<ApiResponsBase>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=base_info`,
         movieStore.isLoadingMovieItem,
         movieStore.getDataMovieItem,
         movieStore.isErrorMovieItem)
+})
 
+onMounted(async () => {
     await UseGetMovieData<Actors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=extendedCast`,
         movieStore.isLoadingActorsMovie,
         movieStore.getActorsMovie,
         movieStore.isErrorActorsMovie)
 
+})
+
+onMounted(async () => {
     await UseGetMovieData<BudgetMovie>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=revenue_budget`,
         movieStore.isLoadingBudgetMovie,
         movieStore.getBudgetMovie,
         movieStore.isErrorBudgetMovie)
 
+})
+
+onMounted(async () => {
     await UseGetMovieData<Directors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=creators_directors_writers`,
         movieStore.isLoadingDirectorsMovie,
         movieStore.getDirectorsMovie,
         movieStore.isErrorDirectorsMovie)
-    })
+})
 
 </script>
 
@@ -55,7 +60,6 @@ onMounted(async () => {
 <style scoped lang="scss">
 .movieItemContainer {
     height: 100vh;
-    padding-top: 100px;
     display: flex;
     justify-content: center;
     padding-left: 50px;

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import MovieCard from '../movieCard/MovieCard.vue';
 import { defineProps } from 'vue';
-import { IMovie } from '../../types/types'
+import { ApiResponseMini } from '../../types/miniInfoTypes'
+import { Skeletor } from "vue-skeletor";
+import "vue-skeletor/dist/vue-skeletor.css";
 
 
-const props = defineProps<{ trendingMovies: IMovie[] }>();
+const props = defineProps<{ trendingMovies: ApiResponseMini | undefined, loading: boolean }>();
 
 </script>
 
@@ -13,8 +15,13 @@ const props = defineProps<{ trendingMovies: IMovie[] }>();
         <div class="trendingContainer">
             <h2>Trending</h2>
             <div class="trendingContainerCards">
-                <MovieCard :dataMovie="movie" width="26%" v-for="(movie, index) in props.trendingMovies" :key="index" />
-                <div class="trendingContainerCardsInvisible"></div>
+                <Skeletor v-if="props.loading" v-for="item in 10" class="trendingContainerCardsLoading"/>
+
+                <template v-else-if="!props.loading && props.trendingMovies">
+                    <MovieCard :dataMovie="movie" width="18%" :loading="props.loading" v-for="(movie, index) in props.trendingMovies.results"
+                        :key="index" />
+                    <div class="trendingContainerCardsInvisible"></div>
+                </template>
             </div>
         </div>
     </div>
@@ -42,8 +49,15 @@ const props = defineProps<{ trendingMovies: IMovie[] }>();
             flex-wrap: wrap;
             justify-content: space-between;
 
-            .trendingContainerCardsInvisible{
-                width: 26%;
+            .trendingContainerCardsLoading{
+                width: 18%;
+                height: 300px;
+                border-radius: 15px;
+                margin: 20px 0;
+            }
+
+            .trendingContainerCardsInvisible {
+                width: 18%;
             }
 
         }

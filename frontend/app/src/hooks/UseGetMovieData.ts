@@ -7,10 +7,10 @@ interface ApiRespons<T>{
 const { request } = useHttp()
 
 export async function UseGetMovieData<T>(url: string, loading: Function, getData: Function, error: Function) {
-    console.log(url)    
     loading()
 
     const response = await request(url) as ApiRespons<T>
+    console.log(response)    
 
     if ((await response).results) {
         getData(await response)
