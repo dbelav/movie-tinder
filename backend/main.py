@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from db.database import create_db
+from auth.routers import router as auth_router
+
 
 app = FastAPI()
-origins = [
-    "*"
-]
+create_db()
 
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -14,99 +16,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/trending/")
-def trending():
-    return [
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-        {
-            'id': 1,
-            'title': 'Terminator',
-            'year': 1984,
-            'poster_url': 'https://m.media-amazon.com/images/I/61qCgQZyhOL.jpg',
-            'rating': 7.8,
-            'genres': [
-                {'name': 'Sci-Fi', 'slug': 'scifi'},
-                {'name': 'Thriller', 'slug': 'thriller'},
-                {'name': 'Action', 'slug': 'action'},
-                {'name': 'Apocalypse', 'slug': 'apocalypse'},
-            ]
-        },
-
-    ]
+app.include_router(auth_router)
