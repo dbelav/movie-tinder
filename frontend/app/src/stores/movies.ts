@@ -23,6 +23,8 @@ export const useMovies = defineStore("MovieItem", () => {
     "/titles?limit=30&page=1"
   );
 
+  const filterNullGenresData = computed(() => moviesGenresData.value.results.filter( genre => genre !== null))
+
   function getDataMovies<T extends ApiResponseMini>(payload: T) {
     moviesLoading.value = false;
     moviesData.value = payload;
@@ -102,6 +104,7 @@ export const useMovies = defineStore("MovieItem", () => {
     deleteAllPreviousPages,
     BASE_API_URL,
     urlParams,
-    setUrlParams
+    setUrlParams,
+    filterNullGenresData
   };
 });

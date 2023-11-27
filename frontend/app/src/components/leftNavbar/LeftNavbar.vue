@@ -58,7 +58,7 @@ function isRouteActive(path: string): boolean {
 
 <style scoped lang="scss">
 .leftNavbarContainer {
-    width: 10%;
+    width: 120px;
     height: 100vh;
     background-color: #21201E;
     display: flex;
@@ -102,6 +102,7 @@ function isRouteActive(path: string): boolean {
                     display: flex;
                     align-items: center;
                     transition: 0.3s;
+                    justify-content: center;
 
                     img {
                         margin-right: 10px;
@@ -112,11 +113,10 @@ function isRouteActive(path: string): boolean {
                     span {
                         display: none;
                     }
-
-
                 }
 
                 .leftNavbarContainerGeneralOpen {
+                    justify-content: flex-start;
 
                     span {
                         display: inline;
@@ -136,6 +136,6 @@ function isRouteActive(path: string): boolean {
 }
 
 .leftNavbarContainerOpen {
-    width: 15%;
+    width: 200px;
 }
 </style>

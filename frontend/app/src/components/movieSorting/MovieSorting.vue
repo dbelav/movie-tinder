@@ -4,6 +4,8 @@ import { ref } from 'vue'
 import { ApiResponseMini } from '../../types/miniInfoTypes'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import Delete from '../../assets/Delete.vue'
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 
 
 interface FilterParamsInner {
@@ -24,32 +26,32 @@ let timeoutSearch: NodeJS.Timeout | null = null
 
 const filterParams = ref<FilterParams>({
     searchByYear: {
-        name: 'Search By Year',
+        name: 'By Year',
         url: 'year=',
         value: ''
     },
     searchFromYear: {
-        name: 'Search From Year',
+        name: 'From Year',
         url: 'startYear=',
         value: ''
     },
     searchToYear: {
-        name: 'Search To Year',
+        name: 'To Year',
         url: 'endYear=',
         value: ''
     },
     incDecSearch: {
-        name: 'Search By Range',
+        name: 'By Range',
         url: 'sort=',
         value: 'year.incr'
     },
     currentGenreSearch: {
-        name: 'Search By Genre',
+        name: 'By Genre',
         url: 'genre=',
         value: ''
     },
     currentListItemSearch: {
-        name: 'Search By List',
+        name: 'By List',
         url: 'list=',
         value: ''
     }
@@ -90,7 +92,6 @@ async function searchByName(urlApi: string) {
             );
         }, 300);
     }
-
 }
 
 function clearFilters(filterName: string) {
@@ -109,75 +110,68 @@ function toggleIncDecSearch() {
     filterParams.value.incDecSearch.value = filterParams.value.incDecSearch.value === 'year.incr' ? 'year.decr' : 'year.incr';
 }
 
+function formatLabel(label: string) {
+    return label.replace(/_/g, ' ').replace(/\b\w/g, match => match.toUpperCase())
+}
+
 </script>
 
 <template>
     <div class="movieSortingContainer" v-if="store.moviesListData && store.moviesGenresData">
-        <div class="movieSortingGenres">
-            <ul class="movieSortingGenresList">
-                <template v-for="genre in store.moviesGenresData.results">
-                    <li class="movieSortingGenresListItem" v-if="genre">
-                        <button @click="filterParams.currentGenreSearch.value = genre"
-                            :style="{ color: genre === filterParams.currentGenreSearch.value ? 'black' : '#fff' }">
-                            {{ genre }}
-                        </button>
-                    </li>
-                </template>
-            </ul>
-        </div>
+        <div class="movieSortingContainerFilter">
+            <div class="movieSortingContainerInnerFilter">
+                <div class="movieSearchKeyword">
+                    <form>
+                        <input type="text" placeholder="Search By Name" class="movieSortInput" v-model="searchKeyword"
+                            @input="searchByName(BASE_API_URL)">
+                    </form>
+                </div>
 
-        <div class="movieSortingList">
-            <ul class="movieSortingListInner">
-                <template v-for="listItem in store.moviesListData.results">
-                    <li class="movieSortingListItem">
-                        <button class="movieSortingListItemButton"
-                            @click="filterParams.currentListItemSearch.value = listItem"
-                            :style="{ color: listItem === filterParams.currentListItemSearch.value ? 'black' : '#fff' }">{{
-                                listItem.replace(/_/g, ' ').replace(/\b\w/g, match => match.toUpperCase()) }}
+                <div class="movieSortingDropDownList">
+                    <v-select v-model="filterParams.currentGenreSearch.value" :options="store.filterNullGenresData"
+                        placeholder="Select Genre" label="name"></v-select>
+                </div>
+
+                <div class="movieSortingDropDownList">
+                    <v-select v-model="filterParams.currentListItemSearch.value"
+                        :options="store.moviesListData.results.map(listItem => ({ label: formatLabel(listItem), value: listItem }))"
+                        label="label" :reduce="option => option.value" placeholder="Select List Item"></v-select>
+                </div>
+                <div class="movieSortingDateClear">
+                    <template v-for="filter in filterParams">
+                        <button class="movieSortingDateClearButton movieSortingButton" @click="clearFilters(filter.name)"
+                            v-if="filter.value && filter.name !== 'Search By Range'">
+                            <Delete class="movieSortingButtonDelete" /><span>{{ filter.name }}</span>
                         </button>
-                    </li>
-                </template>
-            </ul>
-        </div>
-        <div class="movieSearchSortingContainer">
-            <div class="movieSearchKeyword">
-                <h2>Search By Name</h2>
-                <form>
-                    <input type="text" class="movieSortInput" v-model="searchKeyword" @input="searchByName(BASE_API_URL)">
+                    </template>
+                </div>
+
+            </div>
+
+
+            <div class="movieSortingDateYear">
+                <form class="movieSortingDateYearForm" @submit.prevent>
+                    <input placeholder="Search by Year" type="text" class="movieSortInput"
+                        v-model="filterParams.searchByYear.value">
+                </form>
+
+                <form class="movieSortingDateRangeYearForm" @submit.prevent>
+                    <input placeholder="Range From" type="text" class="movieSortInput movieSortInput1"
+                        v-model="filterParams.searchFromYear.value">
+                    <input placeholder="Range To" type="text" class="movieSortInput movieSortInput2"
+                        v-model="filterParams.searchToYear.value">
+                        <div class="movieSortingDateRangeYearButton">
+                            <button class="movieSortingButton" @click="toggleIncDecSearch()">
+                        {{ filterParams.incDecSearch.value }}</button>
+                        </div>
+
                 </form>
             </div>
-            <div class="movieSortingDate">
-                <h2>Search by Year</h2>
-                <div class="movieSortingDateYear">
-                    <form class="movieSortingDateYearForm" @submit.prevent>
-                        <input type="text" class="movieSortInput" v-model="filterParams.searchByYear.value">
-                    </form>
-                </div>
-
-                <div class="movieSortingDateRangeYear">
-                    <h2>Search by Year Range</h2>
-                    <form class="movieSortingDateRangeYearForm" @submit.prevent>
-                        <input type="text" class="movieSortInput" v-model="filterParams.searchFromYear.value">
-                        <input type="text" class="movieSortInput" v-model="filterParams.searchToYear.value">
-                        <button class="movieSortingButton" @click="toggleIncDecSearch()">
-                            {{ filterParams.incDecSearch.value }}</button>
-                    </form>
-
-                    <div class="movieSortingDateSearch">
-                        <button class="movieSortingButton" @click="searchByParams(BASE_API_URL)">Search</button>
-                    </div>
-                    <div class="movieSortingDateClear">
-                        <template v-for="filter in filterParams">
-                            <button class="movieSortingDateClearButton movieSortingButton"
-                                @click="clearFilters(filter.name)" v-if="filter.value && filter.name !== 'Search By Range'">
-                                <Delete class="movieSortingButtonDelete" /><span>{{ filter.name }}</span>
-                            </button>
-                        </template>
-                    </div>
-                </div>
-            </div>
         </div>
 
+        <div class="movieSortingContainerBottom">
+            <button class="movieSortingButton" @click="searchByParams(BASE_API_URL)">Search</button>
+        </div>
     </div>
 </template>
 
@@ -185,64 +179,154 @@ function toggleIncDecSearch() {
 .movieSortingContainer {
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     background-color: #2e2e2e;
-    padding-right: 15px;
+    margin-top: 100px;
 
-    .movieSortingGenres {
-        width: 50%;
+    .movieSortingContainerFilter {
+        width: 100%;
+        display: flex;
+        margin-top: 10px;
+        justify-content: space-between;
 
-        .movieSortingGenresList {
+
+        .movieSortingContainerInnerFilter {
+            width: 70%;
             display: flex;
+            justify-content: space-between;
             flex-wrap: wrap;
-            padding: 15px 20px;
-            margin: 0;
+            margin-left: 1%;
 
-            .movieSortingGenresListItem {
-                list-style: none;
-                margin: 7px;
+            .movieSearchKeyword {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 30%;
 
-                button {
-                    background-color: transparent;
-                    border: none;
-                    cursor: pointer;
-                    padding: 0;
-                    font-size: 18px;
-                    color: #fff;
-                    text-decoration: underline;
+                form {
+                    width: 100%;
                 }
+            }
+
+            .movieSortingDropDownList {
+                width: 30%;
+
+                .vs__dropdown-toggle {
+                    background-color: #333;
+                    border: 1px solid #fff;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    padding: 10px;
+                    font-size: 18px;
+                }
+
+                .vs__selected {
+                    color: #fff;
+                }
+
+                .vs__open-indicator {
+                    fill: #fff;
+                }
+
+                .vs__dropdown-menu {
+                    background-color: #333;
+                    border: 1px solid #ccc;
+                    border-radius: 8px;
+                    color: #fff;
+                    font-size: 18px;
+                }
+
+                .vs__search {
+                    color: #fff;
+                    font-size: 18px;
+                }
+
+                .vs__option {
+                    padding: 10px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #444;
+                    }
+                }
+            }
+
+            .movieSortingDateClear {
+                display: flex;
+                white-space: nowrap;
+
+                .movieSortingDateClearButton {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 3%;
+
+                    .movieSortingButtonDelete {
+                        height: 40%;
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+
+        .movieSortingDateYear {
+            width: 25%;
+
+            .movieSortingDateRangeYearForm {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+
+                .movieSortInput {
+                    width: 48%;
+                    margin: 12px 0;
+                }
+
+                .movieSortInput1 {
+                    margin-right: 1%;
+                }
+
+                .movieSortInput2 {
+                    margin-left: 1%;
+                }
+                
+                .movieSortingDateRangeYearButton{
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                }
+            }
+        }
+
+        .movieSortInput {
+            height: 30px;
+            background-color: #333;
+            border: 1px solid #fff;
+            border-radius: 8px;
+            padding: 26px;
+            font-size: 18px;
+            color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+
+            &::placeholder {
+                color: #fff;
             }
         }
     }
 
-    .movieSortingList {
-        width: 35%;
-
-        .movieSortingListInner {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0;
-
-            .movieSortingListItem {
-                width: 90%;
-                list-style: none;
-                margin: 7px;
-                display: flex;
-
-                .movieSortingListItemButton {
-                    background-color: transparent;
-                    border: none;
-                    cursor: pointer;
-                    padding: 0;
-                    font-size: 18px;
-                    color: #fff;
-                    width: 100%;
-                    display: flex;
-                    text-decoration: underline;
-                }
-            }
+    .movieSortingContainerBottom {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+        
+        .movieSortingButton{
+            width: 150px;
+            font-size: 18px;
         }
+
     }
 
     .movieSortingButton {
@@ -254,75 +338,6 @@ function toggleIncDecSearch() {
         border-radius: 7px;
         cursor: pointer;
         padding: 0 10px;
-    }
-
-    .movieSearchSortingContainer {
-        color: #fff;
-
-        .movieSearchKeyword {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            align-items: center;
-
-        }
-
-        .movieSortingDate {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            h2 {
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-
-            .movieSortingDateYear,
-            .movieSortingDateRangeYear {
-                margin-bottom: 20px;
-
-                h2 {
-                    text-align: center;
-                }
-
-                .movieSortingDateYearForm,
-                .movieSortingDateRangeYearForm {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .movieSortingDateSearch {
-                    margin-top: 10px;
-                }
-            }
-        }
-
-        .movieSortInput {
-            height: 30px;
-            border-radius: 7px;
-            border: none;
-            margin-right: 10px;
-            padding: 5px;
-            font-size: 18px;
-        }
-    }
-
-
-    .movieSortingDateClear {
-        display: flex;
-        justify-content: center;
-
-        .movieSortingDateClearButton {
-            margin: 10px 7px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            .movieSortingButtonDelete {
-                height: 40%;
-                margin-right: 10px;
-            }
-        }
     }
 }
 </style>
