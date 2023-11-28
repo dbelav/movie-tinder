@@ -12,11 +12,17 @@ const movieStore = useMovieItem()
 type Date = number | null | undefined
 
 function renderGenres(genres: Genre[]): string {
-    const genresToString = genres.map((genre) => genre.text.toLowerCase())
-    return genresToString.join(', ');
+    if (genres !== null) {
+        const genresToString = genres.map((genre) => genre.text.toLowerCase())
+        return genresToString.join(', ');
+    } else {
+        return 'Not Data'
+    }
+
+
 }
 
-function renderDirectors(directors: DirectorCategory[] | undefined): string {
+function renderDirectors(directors: DirectorCategory[] | undefined | null): string {
     if (directors) {
         const directorsToString = directors.map((director) => director.credits[0].name.nameText.text)
         return directorsToString.join(', ');
@@ -29,23 +35,24 @@ function renderDate(year: Date, month: Date, day: Date): string {
     if (typeof year === 'number' && typeof month === 'number' && typeof day === 'number') {
         return `${day}-${month > 9 ? month : '0' + month}-${year}`;
     }
-    return '';
+    return 'Not Data';
 }
 
 const releaseData = renderDate(
     movieStore.movieItemData?.results.releaseDate?.year,
     movieStore.movieItemData?.results.releaseDate?.month,
     movieStore.movieItemData?.results.releaseDate?.day
-);
+)
 
-const budgetAmount = movieStore.budgetMovieData?.results.productionBudget.budget?.amount
+const budgetAmount = movieStore.budgetMovieData !== null ?
+    movieStore.budgetMovieData.results.productionBudget.budget.amount.toLocaleString() + ' USD' : 'Not Data'
 
-const budgetworldwideGross = movieStore.budgetMovieData?.results.worldwideGross.total?.amount
+const budgetworldwideGross = movieStore.budgetMovieData !== null ?
+    movieStore.budgetMovieData?.results.worldwideGross.total?.amount.toLocaleString() + ' USD' : 'Not Data'
 </script>
 
 <template>
-    <div class="movieItemContainerInfo" v-if="movieStore.movieItemData">
-
+    <div class="movieItemContainerInfo" v-if="movieStore.movieItemData && movieStore.budgetMovieData">
         <div class="movieItemInnerContainerInfo">
             <div class="movieItemInfoTitleRating">
                 <h2>{{ movieStore.movieItemData.results.titleText.text }}</h2>
@@ -63,13 +70,14 @@ const budgetworldwideGross = movieStore.budgetMovieData?.results.worldwideGross.
                     Genres: <span>{{ renderGenres(movieStore.movieItemData.results.genres.genres) }}</span>
                 </div>
                 <div class="movieItemInfoTime movieItemInfoBodyItem">Duration:
-                    <span>{{ UseConvertDuration(movieStore.movieItemData.results.runtime.seconds) }}</span>
+                    <span>{{ movieStore.movieItemData.results.runtime !== null ?
+                        UseConvertDuration(movieStore.movieItemData.results.runtime.seconds) : 'Not Data' }}</span>
                 </div>
-                <div class="movieItemInfoBudget movieItemInfoBodyItem" v-if="budgetAmount">
-                    Budget: <span>{{ budgetAmount + ' USD' }}</span>
+                <div class="movieItemInfoBudget movieItemInfoBodyItem">
+                    Budget: <span>{{ budgetAmount }}</span>
                 </div>
-                <div class="movieItemInfoFees movieItemInfoBodyItem" v-if="budgetworldwideGross">
-                    Worldwide box-office: <span>{{ budgetworldwideGross + ' USD' }}</span>
+                <div class="movieItemInfoFees movieItemInfoBodyItem">
+                    Worldwide box-office: <span>{{ budgetworldwideGross }}</span>
                 </div>
                 <div class="movieItemInfoDirector movieItemInfoBodyItem">
                     Directors: <span>{{ renderDirectors(movieStore.directorsMovieData?.results.directors) }}</span>
@@ -78,9 +86,10 @@ const budgetworldwideGross = movieStore.budgetMovieData?.results.worldwideGross.
             </div>
 
             <div class="movieItemInfoDescribe">
-                <p>{{ movieStore.movieItemData.results.plot.plotText.plainText }}</p>
+                <p>{{ movieStore.movieItemData.results.plot ? movieStore.movieItemData.results.plot.plotText.plainText :
+                    'Not Data' }}</p>
             </div>
-            
+
         </div>
     </div>
 </template>
@@ -93,7 +102,7 @@ const budgetworldwideGross = movieStore.budgetMovieData?.results.worldwideGross.
     width: 70%;
     display: flex;
     align-items: center;
-    font-size: 18px;
+    font-size: 20px;
 
     .movieItemInnerContainerInfo {
         width: 90%;

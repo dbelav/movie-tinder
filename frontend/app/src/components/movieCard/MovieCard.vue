@@ -45,7 +45,7 @@ function goToMovieInfo(id: string) {
 <style scoped lang="scss">
 .movieCard {
     width: 20%;
-    height: 300px;
+    height: 400px;
     background-size: no-repeat;
     background-position: center;
     background-size: cover;
@@ -54,9 +54,9 @@ function goToMovieInfo(id: string) {
     align-items: flex-end;
     justify-content: space-between;
     position: relative;
-    border-radius: 15px;
+    border-radius: 10px;
     border: 1px;
-    margin: 20px 0;
+    margin: 15px 0;
 
     .addToFavourites {
         display: none;

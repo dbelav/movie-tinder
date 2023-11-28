@@ -140,7 +140,8 @@ function formatLabel(label: string) {
                 <div class="movieSortingDateClear">
                     <template v-for="filter in filterParams">
                         <button class="movieSortingDateClearButton movieSortingButton" @click="clearFilters(filter.name)"
-                            v-if="filter.value && filter.name !== 'Search By Range'">
+                            v-if="filter.value && filter.name !== 'By Range'">
+
                             <Delete class="movieSortingButtonDelete" /><span>{{ filter.name }}</span>
                         </button>
                     </template>
@@ -160,10 +161,10 @@ function formatLabel(label: string) {
                         v-model="filterParams.searchFromYear.value">
                     <input placeholder="Range To" type="text" class="movieSortInput movieSortInput2"
                         v-model="filterParams.searchToYear.value">
-                        <div class="movieSortingDateRangeYearButton">
-                            <button class="movieSortingButton" @click="toggleIncDecSearch()">
-                        {{ filterParams.incDecSearch.value }}</button>
-                        </div>
+                    <div class="movieSortingDateRangeYearButton">
+                        <button class="movieSortingButton" @click="toggleIncDecSearch()">
+                            {{ filterParams.incDecSearch.value }}</button>
+                    </div>
 
                 </form>
             </div>
@@ -181,7 +182,7 @@ function formatLabel(label: string) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #2e2e2e;
+    background-color: #16161e;
     margin-top: 100px;
 
     .movieSortingContainerFilter {
@@ -213,8 +214,8 @@ function formatLabel(label: string) {
                 width: 30%;
 
                 .vs__dropdown-toggle {
-                    background-color: #333;
-                    border: 1px solid #fff;
+                    background-color: #31303b;
+                    border: 1px solid #ffffff3d;
                     border-radius: 8px;
                     cursor: pointer;
                     padding: 10px;
@@ -230,8 +231,8 @@ function formatLabel(label: string) {
                 }
 
                 .vs__dropdown-menu {
-                    background-color: #333;
-                    border: 1px solid #ccc;
+                    background-color: #31303b;
+                    border: 1px solid #ffffff3d;
                     border-radius: 8px;
                     color: #fff;
                     font-size: 18px;
@@ -255,6 +256,7 @@ function formatLabel(label: string) {
             .movieSortingDateClear {
                 display: flex;
                 white-space: nowrap;
+                width: 100%;
 
                 .movieSortingDateClearButton {
                     display: flex;
@@ -290,8 +292,8 @@ function formatLabel(label: string) {
                 .movieSortInput2 {
                     margin-left: 1%;
                 }
-                
-                .movieSortingDateRangeYearButton{
+
+                .movieSortingDateRangeYearButton {
                     width: 100%;
                     display: flex;
                     justify-content: center;
@@ -301,8 +303,8 @@ function formatLabel(label: string) {
 
         .movieSortInput {
             height: 30px;
-            background-color: #333;
-            border: 1px solid #fff;
+            background-color: #31303b;
+            border: 1px solid #ffffff3d;
             border-radius: 8px;
             padding: 26px;
             font-size: 18px;
@@ -321,8 +323,8 @@ function formatLabel(label: string) {
         width: 100%;
         justify-content: center;
         margin-bottom: 10px;
-        
-        .movieSortingButton{
+
+        .movieSortingButton {
             width: 150px;
             font-size: 18px;
         }
@@ -331,7 +333,7 @@ function formatLabel(label: string) {
 
     .movieSortingButton {
         height: 40px;
-        background-color: rgba(66, 66, 66, 0.671);
+        background-color: #31303b;
         color: #fff;
         font-size: 16px;
         border: none;

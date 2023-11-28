@@ -15,7 +15,7 @@ function isRouteActive(path: string): boolean {
 <template>
     <div class="leftNavbarContainer" :class="{ 'leftNavbarContainerOpen': props.isOpenLeftNavbar }">
         <div class="leftNavbarContainerInner">
-            <div class="leftNavbarBurger">
+            <div class="leftNavbarBurgerContainer">
                 <BurgerNavbar :isOpenLeftNavbar="props.isOpenLeftNavbar" :toggleNavbar="props.toggleNavbar" />
             </div>
             <div class="leftNavbarContainerLinksContainer">
@@ -60,7 +60,8 @@ function isRouteActive(path: string): boolean {
 .leftNavbarContainer {
     width: 120px;
     height: 100vh;
-    background-color: #21201E;
+    // background-color: #21201E;
+    background-color: #14131a;
     display: flex;
     color: #fff;
     font-size: 18px;
@@ -74,11 +75,12 @@ function isRouteActive(path: string): boolean {
         display: flex;
         flex-direction: column;
 
-        margin-left: 5%;
 
-        .leftNavbarBurger {
-            margin-top: 5px;
+        .leftNavbarBurgerContainer {
+            margin-top: 20px;
             margin-bottom: 100px;
+            display: flex;
+            justify-content: center;
         }
 
         .leftNavbarContainerLinksContainer {
@@ -121,6 +123,7 @@ function isRouteActive(path: string): boolean {
                     span {
                         display: inline;
                     }
+
                     img {
                         width: 32px;
                     }

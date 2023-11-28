@@ -27,15 +27,21 @@ function toggleNavbar() {
 .app {
   display: flex;
   width: 100%;
-  background: conic-gradient(from -1.54deg at 28.99% 107.28%, #191817 0deg, #37312A 175.51deg, #191817 342.49deg, #191817 360deg);
+  // background: conic-gradient(from -1.54deg at 28.99% 107.28%, #191817 0deg, #37312A 175.51deg, #191817 342.49deg, #191817 360deg);
+  background: rgb(34, 33, 45);
+  background: linear-gradient(
+    180deg,
+    rgba(34, 33, 45, 1) 0%,
+    rgb(25 25 33) 100%
+  );
   min-height: 100vh;
   .appMainContainer {
     width: 100%; 
-    padding-left: 10%;
+    padding-left: 120px;
     transition: 0.3s;
   }
   .appMainContainerOpen {
-    padding-left: 15%;
+    padding-left: 200px;
   }
 }
 </style>

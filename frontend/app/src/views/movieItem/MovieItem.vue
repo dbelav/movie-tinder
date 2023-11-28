@@ -64,10 +64,10 @@ onMounted(async () => {
     justify-content: center;
     padding-left: 50px;
     padding-right: 50px;
+    margin-top: 50px;
 
     .movieItemContainerImage {
         width: 30%;
-
         img {
             width: 100%;
         }
