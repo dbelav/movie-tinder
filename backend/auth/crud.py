@@ -29,7 +29,8 @@ class UserCRUD:
 
         return {
             "status": True,
-            "message": "User successfully created."
+            "message": "User successfully created.",
+            "instance": user,
         }
 
     def check_user_credentials(self, username, password):
@@ -43,10 +44,11 @@ class UserCRUD:
         if status:
             return {
                 "status": status,
-                "message": "OK!"
+                "message": "OK!",
+                "instance": user,
             }
         else:
             return {
                 "status": status,
-                "message": "Wrong username or password."
+                "message": "Wrong username or password.",
             }
