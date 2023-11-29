@@ -8,11 +8,11 @@ router = APIRouter(
     tags=["auth"],
     responses={404: {"description": "Not found"}},
 )
-user_crud = UserCRUD()
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(user: UserSchema, response: Response):
+    user_crud = UserCRUD()
     result = user_crud.create_user(user.username, user.password)
     if not result["status"]:
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -26,6 +26,7 @@ def register(user: UserSchema, response: Response):
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 def login(username: str, password: str, response: Response):
+    user_crud = UserCRUD()
     result = user_crud.check_user_credentials(username, password)
     if not result["status"]:
         response.status_code = status.HTTP_400_BAD_REQUEST
