@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type { ActorsApiResponse, ActorInfoResponce } from "../types/actorsPage";
-import type {ApiResponseMini} from '../types/baseInfoTypes'
+import type {ApiResponsBase} from '../types/baseInfoTypes'
 
 export const useActors = defineStore("Actors", () => {
   const actorsData = ref<ActorsApiResponse>();

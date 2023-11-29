@@ -5,7 +5,7 @@ import { useHomePageStore } from '../../stores/homePage';
 import { useHttp } from '../../hooks/useHtpp'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData';
 import { onMounted } from 'vue'
-import { ApiResponseMini } from '../../types/miniInfoTypes';
+import type { ApiResponseMini } from '../../types/miniInfoTypes';
 
 
 const store = useHomePageStore()

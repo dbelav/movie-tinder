@@ -44,7 +44,7 @@ function goToMovieInfo(id: string) {
 
 <style scoped lang="scss">
 .movieCard {
-    width: 20%;
+    width: 18%;
     height: 400px;
     background-size: no-repeat;
     background-position: center;
@@ -66,9 +66,10 @@ function goToMovieInfo(id: string) {
     }
 
     &:hover {
-        .addToFavourites{
+        .addToFavourites {
             display: block;
         }
+
         .movieCardbody {
             display: flex;
         }
@@ -126,8 +127,61 @@ function goToMovieInfo(id: string) {
             }
         }
     }
+}
 
+@media screen and (max-width: 1780px) {
+    .movieCard {
+        height: 350px;
+    }
+}
 
+@media screen and (max-width: 1550px) {
+    .movieCard {
+        height: 300px;
+    }
+}
 
+@media screen and (max-width: 1368px) {
+    .movieCard {
+        height: 250px;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .movieCard {
+        width: 23%;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    .movieCard {
+        height: 220px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .movieCard {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 580px) {
+    .movieCard {
+        height: 180px;
+    }
+}
+
+@media screen and (max-width: 528px) {
+    .movieCard {
+        height: 180px;
+        width: 30%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .movieCard {
+        height: 150px;
+        width: 30%;
+    }
 }
 </style>

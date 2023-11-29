@@ -18,7 +18,7 @@ const props = defineProps<{ trendingMovies: ApiResponseMini | undefined, loading
                 <Skeletor v-if="props.loading" v-for="item in 10" class="trendingContainerCardsLoading"/>
 
                 <template v-else-if="!props.loading && props.trendingMovies">
-                    <MovieCard :dataMovie="movie" width="18%" :loading="props.loading" v-for="(movie, index) in props.trendingMovies.results"
+                    <MovieCard :dataMovie="movie" :loading="props.loading" v-for="(movie, index) in props.trendingMovies.results"
                         :key="index" />
                     <div class="trendingContainerCardsInvisible"></div>
                 </template>

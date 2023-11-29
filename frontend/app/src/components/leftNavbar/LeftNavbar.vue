@@ -10,6 +10,34 @@ function isRouteActive(path: string): boolean {
     return route.path === path;
 }
 
+const optionRoutes = [
+    {
+        url: '/',
+        img: 'http://localhost:5173/src/assets/tinder.png',
+        name: 'Main Page'
+    },
+    {
+        url: '/movies',
+        img: 'http://localhost:5173/src/assets/movie.png',
+        name: 'Movies'
+    },
+    {
+        url: '/actors/1',
+        img: 'http://localhost:5173/src/assets/actor.png',
+        name: 'Actors'
+    },
+    {
+        url: '/favorites',
+        img: 'http://localhost:5173/src/assets/favorite.png',
+        name: 'Favorites'
+    },
+    {
+        url: '/tinder',
+        img: 'http://localhost:5173/src/assets/tinder.png',
+        name: 'Tinder'
+    },
+]
+
 </script>
 
 <template>
@@ -20,30 +48,13 @@ function isRouteActive(path: string): boolean {
             </div>
             <div class="leftNavbarContainerLinksContainer">
                 <div class="leftNavbarLinks">
-                    <RouterLink to="/" class="leftNavbarContainerGeneral"
-                        :class="{ 'active': isRouteActive('/'), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
-                        <img src="../../assets/mainPage.png" />
-                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Main Page</span>
-
-                    </RouterLink>
-                    <RouterLink to="/movies" class="leftNavbarContainerGeneral"
-                        :class="{ 'active': isRouteActive('/movies'), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
-                        <img src="../../assets/movie.png" />
-                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Movies</span>
-                    </RouterLink>
-                    <RouterLink to="/actors/1" class="leftNavbarContainerGeneral"
-                        :class="{ 'active': isRouteActive('/actors/1'), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
-                        <img src="../../assets/actor.png" />
-                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Actors</span>
-                    </RouterLink>
-                    <div class="leftNavbarContainerGeneral">
-                        <img src="../../assets/favorite.png" />
-                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Favourites</span>
-                    </div>
-                    <div class="leftNavbarContainerGeneral">
-                        <img src="../../assets/tinder.png" />
-                        <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">Tinder</span>
-                    </div>
+                    <template v-for="item in optionRoutes">
+                        <RouterLink :to="item.url" class="leftNavbarContainerGeneral"
+                            :class="{ 'active': isRouteActive(item.url), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
+                            <img :src="item.img" />
+                            <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">{{ item.name }}</span>
+                        </RouterLink>
+                    </template>
                 </div>
 
                 <div class="leftNavbarSettingLogout">
@@ -51,7 +62,6 @@ function isRouteActive(path: string): boolean {
                     <div class="leftNavbarLogoutLink leftNavbarContainerGeneral">Logout</div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -68,6 +78,7 @@ function isRouteActive(path: string): boolean {
     box-shadow: 2px 0px 90px 0px #6100C266;
     position: fixed;
     transition: 0.3s;
+    z-index: 3;
 
     .leftNavbarContainerInner {
         width: 100%;
@@ -140,5 +151,75 @@ function isRouteActive(path: string): boolean {
 
 .leftNavbarContainerOpen {
     width: 200px;
+}
+
+
+
+@media screen and (max-width: 950px) {
+    .leftNavbarContainer {
+        width: 100px;
+
+        .leftNavbarContainerInner {
+            .leftNavbarContainerLinksContainer {
+                .leftNavbarLinks {
+                    .leftNavbarContainerGeneral {
+                        img {
+                            width: 30px;
+                        }
+                    }
+
+                    .leftNavbarContainerGeneralOpen {
+                        img {
+                            width: 22px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .leftNavbarContainerOpen {
+        width: 150px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .leftNavbarContainer {
+        width: 100px;
+        background-color: transparent;
+        box-shadow: none;
+
+        .leftNavbarContainerInner {
+            .leftNavbarContainerLinksContainer {
+                display: none;
+
+                .leftNavbarLinks {
+                    .leftNavbarContainerGeneral {
+                        img {
+                            width: 30px;
+                        }
+                    }
+
+                    .leftNavbarContainerGeneralOpen {
+                        img {
+                            width: 22px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .leftNavbarContainerOpen {
+        width: 150px;
+        background-color: #14131a;
+        box-shadow: 2px 0px 90px 0px #6100C266;
+
+        .leftNavbarContainerInner {
+            .leftNavbarContainerLinksContainer {
+                display: flex;
+            }
+        }
+    }
 }
 </style>

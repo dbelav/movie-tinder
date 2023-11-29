@@ -5,8 +5,8 @@ import ActiveHeart from '../../assets/ActiveHeart.vue';
 
 
 interface Iprops {
-    width: string;
-    height: string;
+    width?: string;
+    height?: string;
 }
 
 const props = defineProps<Iprops>();

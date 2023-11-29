@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
 import { defineProps } from 'vue';
-import { ApiResponseMini } from '../../types/miniInfoTypes'
+import type { ApiResponseMini } from '../../types/miniInfoTypes'
 import { RouterLink, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core'
 import { Skeletor } from "vue-skeletor";
@@ -32,7 +32,7 @@ function goToMovieInfo(id: string) {
           <RouterLink :to="`/movies/${props.trendingMovie.results[0].originalTitleText.text.replace(/\s/g, '')}`"
             @click="goToMovieInfo(props.trendingMovie.results[0].id)">Watch Now</RouterLink>
         </div>
-        <AddToFavourites width="67px" height="54px" />
+        <AddToFavourites />
       </div>
     </div>
   </div>
@@ -81,8 +81,9 @@ function goToMovieInfo(id: string) {
     .homeBannerBodyLink {
       display: flex;
 
-      .addToFavouritesButton {
-        position: static;
+      .addToFavourites {
+        width: 54px;
+        height: 57px;
       }
 
       .homeBannerBodyLinkButton {
@@ -104,6 +105,46 @@ function goToMovieInfo(id: string) {
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .homeBanner {
+    height: 500px;
+
+    .homeBannerBody {
+      .homeBannerBodyTitle {
+        font-size: 38px;
+      }
+
+      .homeBannerBodyLink {
+        .homeBannerBodyLinkButton {
+          width: 100px;
+          height: 45px;
+          font-size: 15px;
+        }
+        .addToFavourites {
+        width: 45px;
+        height: 57px;
+      }
+      }
+
+
+    }
+
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .homeBanner {
+    height: 400px;
+
+    .homeBannerBody {
+      margin-left: 50px;
+      margin-bottom: 40px;
+
+    }
+
   }
 }
 </style>

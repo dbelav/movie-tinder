@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMovieItem } from '../../stores/movieItem';
 import { onMounted } from 'vue'
-import { ApiResponsBase } from '../../types/baseInfoTypes';
+import type { ApiResponsBase } from '../../types/baseInfoTypes';
 import MovieItemInfo from '../../components/movieItemInfo/MovieItemInfo.vue'
 import { useStorage } from '@vueuse/core'
 import type { Actors } from '../../types/actorsCast'

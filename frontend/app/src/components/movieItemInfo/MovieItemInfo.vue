@@ -45,7 +45,7 @@ const releaseData = renderDate(
 )
 
 const budgetAmount = movieStore.budgetMovieData !== null ?
-    movieStore.budgetMovieData.results.productionBudget.budget.amount.toLocaleString() + ' USD' : 'Not Data'
+    movieStore.budgetMovieData?.results.productionBudget.budget.amount.toLocaleString() + ' USD' : 'Not Data'
 
 const budgetworldwideGross = movieStore.budgetMovieData !== null ?
     movieStore.budgetMovieData?.results.worldwideGross.total?.amount.toLocaleString() + ' USD' : 'Not Data'

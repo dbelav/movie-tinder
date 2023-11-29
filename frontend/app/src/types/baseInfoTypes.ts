@@ -1,9 +1,5 @@
 import {
-  Image,
   TitleType,
-  TitleText,
-  YearRange,
-  ReleaseDate,
   IMovie,
 } from "./miniInfoTypes";
 

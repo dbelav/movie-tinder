@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMovies } from '../../stores/movies'
 import { ref } from 'vue'
-import { ApiResponseMini } from '../../types/miniInfoTypes'
+import type { ApiResponseMini } from '../../types/miniInfoTypes'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import Delete from '../../assets/Delete.vue'
 import vSelect from "vue-select";
