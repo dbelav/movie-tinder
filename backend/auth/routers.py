@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Response
 from .crud import UserCRUD
 from .schemas import UserSchema
+from .auth import create_access_token, create_refresh_token
 
 
 router = APIRouter(
@@ -36,6 +37,6 @@ def login(user: UserSchema, response: Response):
 
     return {
         "message": result["message"],
-        "user_id": result["instance"].id,
-        "username": result["instance"].username,
+        "access_token": create_access_token(result["instance"].username),
+        "refresh_token": create_refresh_token(result["instance"].username),
     }
