@@ -2,17 +2,24 @@
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
+import { useStorage } from '@vueuse/core'
+
 
 const username = ref('')
 const password = ref('')
+const localStorage = useStorage('userId', '');
 const { request } = useHttp()
+
 
 async function clickSignIn() {
     const response = await request('http://localhost:8000/auth/login', 'POST', JSON.stringify({
         username: username.value,
         password: password.value,
     }));
-    console.log(response)
+    if (response.message === 'OK!') {
+        localStorage.value = response.user_id
+    }
+
 }
 </script>
 

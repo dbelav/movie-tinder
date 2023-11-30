@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import type { IMovie } from "../types/types";
+import type { IMovie } from "../types/miniInfoTypes";
 
 export const useFavouriteMovie = defineStore("homePage", () => {
   const favouriteMovies = ref<IMovie[]>([]);
