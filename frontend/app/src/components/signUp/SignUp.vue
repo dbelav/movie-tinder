@@ -4,52 +4,17 @@ import { ref } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
 
 
-// const username = ref('')
-// const password = ref('')
-// const { request } = useHttp()
+const username = ref('')
+const password = ref('')
+const { request } = useHttp()
 
-// async function clickSignUp() {
-//     console.log(username.value, password.value )
-//     const responce = await request('http://localhost:8000/auth/register', 'POST', {
-//         "username": username.value,
-//         "password": password.value
-//     })
-//     // const responce1 = await fetch('http://localhost:8000/auth/register', 'POST', {
-//     //     "username": username.value,
-//     //     "password": password.value
-//     // }, {})
-//     console.log(responce)
-// }
-const username = "asdasddddd";
-const password = "dsadasddddddd";
-
-const url = 'http://localhost:8000/auth/register';
-const data = {
-    "username": username,
-    "password": password
-};
-
-const requestOptions = {
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        mode: 'no-cors'
-    },
-    body: JSON.stringify({
-        "username": username,
-        "password": password
-    })
-};
-
-async function asd() {
-    console.log(requestOptions)
-    const response = await fetch(url, requestOptions);
+async function clickSignUp() {
+    const response = await request('http://localhost:8000/auth/register', 'POST', JSON.stringify({
+        username: username.value,
+        password: password.value,
+    }));
     console.log(response)
 }
-
-
 
 </script>
 
@@ -61,7 +26,7 @@ async function asd() {
                 <form class="authRegisterForm" @submit.prevent>
                     <input type="text" placeholder="Username" v-model="username">
                     <input type="password" placeholder="Password" v-model="password">
-                    <button @click="asd">Sign Up</button>
+                    <button @click="clickSignUp">Sign Up</button>
                 </form>
             </div>
             <div class="authRegisterRedirect">

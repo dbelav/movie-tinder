@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
-
+import { useHttp } from '../../hooks/useHtpp'
 
 const username = ref('')
 const password = ref('')
+const { request } = useHttp()
 
+async function clickSignIn() {
+    const response = await request('http://localhost:8000/auth/login', 'POST', JSON.stringify({
+        username: username.value,
+        password: password.value,
+    }));
+    console.log(response)
+}
 </script>
 
 <template>
@@ -13,10 +21,10 @@ const password = ref('')
         <div class="authLoginContainerInner">
             <h2 class="authLoginTitle">Sign In</h2>
             <div class="authLoginBody">
-                <form class="authLoginForm">
+                <form class="authLoginForm" @submit.prevent>
                     <input type="text" placeholder="Username" v-model="username">
                     <input type="password" placeholder="Password" v-model="password">
-                    <button>Sign In</button>
+                    <button @click="clickSignIn">Sign In</button>
                 </form>
             </div>
             <div class="authLoginRedirect">
@@ -43,7 +51,7 @@ const password = ref('')
         align-items: center;
         background-color: #14131a;
 
-        .authLoginTitle{
+        .authLoginTitle {
             color: #fff;
             margin-top: 40px;
             margin-bottom: 30px;

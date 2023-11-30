@@ -83,7 +83,7 @@ console.log(urlParams)
                         label="label" placeholder="Select List Item"></v-select>
                 </div>
                 <div class="tinderSelectYear">
-                    <input placeholder="Select Year" v-model="filterParams.searchFromYear.value">
+                    <input placeholder="From Year" v-model="filterParams.searchFromYear.value">
                 </div>
                 <div class="tinderCreateRoom">
                     <button class="movieSortingButton" @click="searchByParams">Create Room</button>
