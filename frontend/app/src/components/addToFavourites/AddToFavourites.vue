@@ -4,46 +4,55 @@ import Heart from '../../assets/Heart.vue';
 import ActiveHeart from '../../assets/ActiveHeart.vue';
 import { useStorage } from '@vueuse/core'
 import { useHttp } from '../../hooks/useHtpp';
+import { useFavoriteMovie } from '../../stores/favorites'
 
-interface Iprops {
-    id: string,
-    width?: string;
-    height?: string;
-}
 
-const props = defineProps<Iprops>();
+const props = defineProps<{ id: string, width: string, height: string }>();
+const favoritesStore = useFavoriteMovie()
 const isActive = ref(false)
 const { request } = useHttp()
 const localStorage = useStorage('userId', '');
 
+
+async function refreshData() {
+    try {
+        favoritesStore.loadingFavoriteMovieIds()
+        const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorage.value}`) as Promise<FavoritesApi>
+        favoritesStore.getFavoriteMovieIds(await responce)
+    } catch {
+        favoritesStore.errorFavoriteMovieIds()
+    }
+}
 async function switchActive() {
     if (isActive.value) {
         const responce = await request(`http://localhost:8000/movies/favorites`, 'DELETE', JSON.stringify({
             user_id: localStorage.value,
             movie_id: props.id,
         }))
-        console.log(responce)
-        isActive.value = false
+        refreshData()
     } else {
         const responce = await request(`http://localhost:8000/movies/favorites`, 'POST', JSON.stringify({
             user_id: localStorage.value,
             movie_id: props.id,
         }))
-        console.log(responce)
-        isActive.value = true
+        refreshData()
     }
 }
 
-// function fetchApi(){
-//     if(isActive){
+function checkIdMatch(id: string) {
+    const isMatch = favoritesStore.favoriteMoviesIdsData?.favorites.filter(item => item.movie_id === id)
+    if (isMatch.length > 0) {
+        isActive.value = true
+    } else {
+        isActive.value = false
+    }
+}
 
-//     }
-// }
 </script>
 
-<template>
+<template v-if="favoriteStore.favoriteMoviesIdsData">
     <div class="addToFavourites">
-
+        {{ checkIdMatch(props.id) }}
         <button class="addToFavouritesButton" :style="{ width: props.width, height: props.height }" @click="switchActive">
             <ActiveHeart v-if="isActive" />
             <Heart v-else />

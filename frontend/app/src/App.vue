@@ -1,11 +1,28 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import LeftNavbar from './components/leftNavbar/LeftNavbar.vue'
 import { RouterView } from 'vue-router'
+import { useStorage } from '@vueuse/core'
+import { useFavoriteMovie } from './stores/favorites'
+import { useHttp } from './hooks/useHtpp'
+import type { FavoritesApi } from './types/favorites'
 import './main.scss'
 
 
+const favoritesStore = useFavoriteMovie()
 const isOpenLeftNavbar = ref(false)
+const localStorage = useStorage('userId', '');
+const { request } = useHttp()
+
+onMounted(async () => {
+  try {
+    favoritesStore.loadingFavoriteMovieIds()
+    const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorage.value}`) as Promise<FavoritesApi>
+    favoritesStore.getFavoriteMovieIds(await responce)
+  } catch {
+    favoritesStore.errorFavoriteMovieIds()
+  }
+})
 
 function toggleNavbar() {
   isOpenLeftNavbar.value = !isOpenLeftNavbar.value;
@@ -15,6 +32,7 @@ function toggleNavbar() {
 
 <template>
   <div class="app">
+
     <LeftNavbar :isOpenLeftNavbar="isOpenLeftNavbar" :toggleNavbar="toggleNavbar" />
     <div class="appMainContainer" :class="{ 'appMainContainerOpen': isOpenLeftNavbar }">
       <RouterView />
@@ -51,6 +69,7 @@ function toggleNavbar() {
     }
   }
 }
+
 @media screen and (max-width: 700px) {
   .app {
     .appMainContainer {

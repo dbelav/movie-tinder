@@ -47,6 +47,10 @@ export interface IMovie {
   releaseDate: ReleaseDate | null;
 }
 
+export interface ImovieIdApi{
+  results: IMovie
+}
+
 export interface ApiResponseMini {
   page: number;
   next: string;
