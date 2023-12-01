@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useHttp } from '../../hooks/useHtpp';
 import MovieCard from '../../components/movieCard/MovieCard.vue';
 import { useStorage } from '@vueuse/core'
@@ -13,19 +13,25 @@ const localStorage = useStorage('userId', '');
 
 async function getMoviesById() {
     favoritesStore.favoriteMoviesIdsData?.favorites.forEach(item => {
-        console.log(item)
         UseGetMovieData<Imovie>(`https://moviesdatabase.p.rapidapi.com/titles/${item.movie_id}`,
             favoritesStore.loadingFavoriteMovieIdApi,
             favoritesStore.getFavoriteMovieIdApi,
             favoritesStore.errorFavoriteMovieIdApi)
     })
-    console.log(favoritesStore.favoriteMoviesApiData)
 }
+onMounted(() => {
+    favoritesStore.favoriteMovieIdApiClear()
+    getMoviesById()
+})
+
+watch(() => favoritesStore.favoriteMoviesIdsData, async () => {
+    favoritesStore.favoriteMovieIdApiClear()
+    await getMoviesById();
+})
 </script>
 
 <template v-if="favoritesStore.favoriteMoviesIdsData">
     <div class="favoritesContainer">
-        {{ getMoviesById() }}
         <div class="favoritesContainerInner">
             <template v-for="item in favoritesStore.favoriteMoviesApiData">
                 <MovieCard :dataMovie="item.results" />
@@ -43,6 +49,7 @@ async function getMoviesById() {
 
     .favoritesContainerInner {
         width: 90%;
+        display: flex;
     }
 }
 </style>

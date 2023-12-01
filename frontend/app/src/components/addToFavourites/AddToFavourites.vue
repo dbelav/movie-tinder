@@ -41,7 +41,7 @@ async function switchActive() {
 
 function checkIdMatch(id: string) {
     const isMatch = favoritesStore.favoriteMoviesIdsData?.favorites.filter(item => item.movie_id === id)
-    if (isMatch.length > 0) {
+    if (isMatch && isMatch.length > 0) {
         isActive.value = true
     } else {
         isActive.value = false

@@ -13,7 +13,7 @@ function isRouteActive(path: string): boolean {
 const optionRoutes = [
     {
         url: '/',
-        img: 'http://localhost:5173/src/assets/tinder.png',
+        img: 'http://localhost:5173/src/assets/mainPage.png',
         name: 'Main Page'
     },
     {

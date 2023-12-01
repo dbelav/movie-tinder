@@ -38,6 +38,10 @@ export const useFavoriteMovie = defineStore("favorite", () => {
     favoriteMoviesApiError.value = true;
   }
 
+  function favoriteMovieIdApiClear(){
+    favoriteMoviesApiData.value = []
+  }
+
   return {
     favoriteMoviesIdsData,
     favoriteMoviesIdsLoading,
@@ -51,5 +55,6 @@ export const useFavoriteMovie = defineStore("favorite", () => {
     getFavoriteMovieIdApi,
     loadingFavoriteMovieIdApi,
     errorFavoriteMovieIdApi,
+    favoriteMovieIdApiClear
   };
 });
