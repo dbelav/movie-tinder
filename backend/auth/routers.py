@@ -1,7 +1,9 @@
-from fastapi import APIRouter, status, Response
+from fastapi import APIRouter, status, Response, Body, Depends
 from .crud import UserCRUD
-from .schemas import UserSchema
-from .auth import create_access_token, create_refresh_token
+from .schemas import UserSchema, User
+from .auth import create_access_token, create_refresh_token, refresh_token_pair
+from .deps import get_current_active_user
+from typing import Annotated
 
 
 router = APIRouter(
@@ -40,3 +42,15 @@ def login(user: UserSchema, response: Response):
         "access_token": create_access_token(result["instance"].username),
         "refresh_token": create_refresh_token(result["instance"].username),
     }
+
+
+@router.post("/refresh", status_code=status.HTTP_200_OK)
+def refresh(response: Response, token: str = Body()):
+
+    return refresh_token_pair(token)
+
+@router.get("/me", response_model=User)
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_current_active_user)]
+):
+    return current_user

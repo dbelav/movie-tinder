@@ -55,3 +55,7 @@ class UserCRUD:
                 "status": status,
                 "message": "Wrong username or password.",
             }
+
+    def get_user_by_username(self, username):
+        user = self._session.query(User).filter_by(username=username).first()
+        return user
