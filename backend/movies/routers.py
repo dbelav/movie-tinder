@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status, Response, Body
 from .crud import MoviesCRUD
+from .tinder.routers import router as tinder_router
 
 
 router = APIRouter(
@@ -7,6 +8,7 @@ router = APIRouter(
     tags=["movies"],
     responses={404: {"description": "Not found"}},
 )
+router.include_router(tinder_router)
 
 
 @router.get("/favorites/", status_code=status.HTTP_200_OK)

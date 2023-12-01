@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Response, Body, Depends
 from .crud import UserCRUD
-from .schemas import UserSchema, User
+from .schemas import UserSchema, User, BaseUser
 from .auth import create_access_token, create_refresh_token, refresh_token_pair
 from .deps import get_current_active_user
 from typing import Annotated
@@ -28,7 +28,7 @@ def register(user: UserSchema, response: Response):
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
-def login(user: UserSchema, response: Response):
+def login(user: BaseUser, response: Response):
     user_crud = UserCRUD()
     result = user_crud.check_user_credentials(user.username, user.password)
     if not result["status"]:

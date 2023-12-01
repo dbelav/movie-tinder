@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field
 
-
-class User(BaseModel):
+class BaseUser(BaseModel):
     username: str = Field(min_length=4)
+
+class User(BaseUser):
+    id: int
 
 
 class UserSchema(User):

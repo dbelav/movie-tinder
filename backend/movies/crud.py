@@ -34,7 +34,7 @@ class MoviesCRUD:
         }
 
     def delete_favorite(self, user_id, movie_id):
-        favorite = self._session.query(Favorites).filter_by(user_id=user_id, movie_id=movie_id).delete()
+        self._session.query(Favorites).filter_by(user_id=user_id, movie_id=movie_id).delete()
         self._session.commit()
 
         return {
