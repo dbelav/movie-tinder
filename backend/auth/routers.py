@@ -28,7 +28,7 @@ def register(user: UserSchema, response: Response):
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
-def login(user: BaseUser, response: Response):
+def login(user: UserSchema, response: Response):
     user_crud = UserCRUD()
     result = user_crud.check_user_credentials(user.username, user.password)
     if not result["status"]:

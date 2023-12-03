@@ -7,7 +7,7 @@ class User(BaseUser):
     id: int
 
 
-class UserSchema(User):
+class UserSchema(BaseUser):
     password: str = Field(min_length=10)
 
 
