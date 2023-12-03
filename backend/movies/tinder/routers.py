@@ -4,6 +4,7 @@ from auth.schemas import User
 from typing import Annotated
 from .crud import TinderCRUD
 from .schemas import LobbyCreateSchema
+from uuid import UUID
 
 router = APIRouter(
     prefix="/tinder",
@@ -20,4 +21,14 @@ def create_lobby(current_user: Annotated[User, Depends(get_current_active_user)]
     return {
         "message": result["message"],
         "lobby_id": result["lobby"].id
+    }
+
+@router.get('/lobby/{lobby_id}/join', status_code=status.HTTP_200_OK)
+def join_lobby(current_user: Annotated[User, Depends(get_current_active_user)], lobby_id: UUID):
+    crud = TinderCRUD()
+    result = crud.create_lobby_participant(user_id=current_user.id, lobby_id=lobby_id)
+
+    return {
+        "message": result["message"],
+        "lp": result.get("lp")
     }

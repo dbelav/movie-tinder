@@ -1,6 +1,5 @@
 from db.database import Base
 from sqlalchemy import Column, Integer, ForeignKey, String
-from sqlalchemy.orm import relationship
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -8,7 +7,7 @@ import uuid
 
 class Lobby(Base):
     __tablename__ = "lobbies"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
     film_api_url = Column(String)
 
@@ -18,7 +17,7 @@ class LobbyParticipant(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    lobby_id = Column(UUID, ForeignKey("lobbies.id"))
+    lobby_id = Column(UUID(as_uuid=True), ForeignKey("lobbies.id"),)
 
     user_id = Column(Integer, ForeignKey("users.id"))
 
