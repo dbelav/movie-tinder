@@ -23,9 +23,11 @@ class TinderCRUD:
         }
 
     def create_lobby_participant(self, user_id, lobby_id, commit=True):
+        lobby = self._session.query(Lobby).filter_by(id=lobby_id).first()
         response = {
             "status": False,
             "message": "User already in lobby",
+            "film_api_url": lobby.film_api_url,
         }
         try:
             lp = LobbyParticipant(lobby_id=lobby_id, user_id=user_id)
@@ -35,6 +37,7 @@ class TinderCRUD:
             response["status"] = True
             response["message"] = "OK!"
             response["lp"] = lp.__dict__
+
         except IntegrityError:
             pass
 
