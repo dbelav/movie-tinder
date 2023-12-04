@@ -35,7 +35,8 @@ def join_lobby(current_user: Annotated[User, Depends(get_current_active_user)], 
 
     return {
         "message": result["message"],
-        "lp": result.get("lp")
+        "lp": result.get("lp"),
+        "film_api_url": result.get("film_api_url")
     }
 
 #
@@ -53,7 +54,6 @@ async def lobby_tinder(websocket: WebSocket, lobby_id: UUID):
                     result = crud.is_match(lobby_id)
                     if result["match"]:
                         await ws_manager.broadcast(f"{result['movie_id']}")
-                        ws_manager.disconnect_all()
                     crud.create_movie_match(
                         data_json["user_id"],
                         lobby_id,
@@ -62,7 +62,6 @@ async def lobby_tinder(websocket: WebSocket, lobby_id: UUID):
                     result = crud.is_match(lobby_id)
                     if result["match"]:
                         await ws_manager.broadcast(f"{result['movie_id']}")
-                        ws_manager.disconnect_all()
             except TypeError:
                 pass
     except (WebSocketDisconnect):
