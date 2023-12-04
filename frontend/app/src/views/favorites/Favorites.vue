@@ -6,8 +6,11 @@ import { useStorage } from '@vueuse/core'
 import { useFavoriteMovie } from '../../stores/favorites'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import type { Imovie } from '../../types/miniInfoTypes'
+import SignIn from '../../components/signIn/SignIn.vue';
 
-const { request } = useHttp()
+
+const localStorageAccess = useStorage('access_token', '');
+const localStorageRefresh = useStorage('refresh_token', '')
 const favoritesStore = useFavoriteMovie()
 const localStorage = useStorage('userId', '');
 
@@ -33,7 +36,8 @@ watch(() => favoritesStore.favoriteMoviesIdsData, async () => {
 <template v-if="favoritesStore.favoriteMoviesIdsData">
     <div class="favoritesContainer">
         <div class="favoritesContainerInner">
-            <template v-for="item in favoritesStore.favoriteMoviesApiData">
+            <SignIn v-if="!localStorageAccess"/>
+            <template v-for="item in favoritesStore.favoriteMoviesApiData" v-else>
                 <MovieCard :dataMovie="item.results" />
             </template>
         </div>

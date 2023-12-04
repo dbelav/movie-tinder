@@ -2,10 +2,15 @@
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
+import { useStorage } from '@vueuse/core'
 
 
+const localStorageAccess = useStorage('access_token', '');
 const username = ref('')
 const password = ref('')
+const errorRegister = ref('')
+const successfulRegister = ref(false)
+
 const { request } = useHttp()
 
 async function clickSignUp() {
@@ -13,7 +18,14 @@ async function clickSignUp() {
         username: username.value,
         password: password.value,
     }));
-    console.log(response)
+    if (response.message) {
+        successfulRegister.value = true
+        errorRegister.value = ''
+    }
+    else if(response.status === 422){
+        errorRegister.value = 'Validation Error'
+        successfulRegister.value = false
+    } 
 }
 
 </script>
@@ -21,17 +33,22 @@ async function clickSignUp() {
 <template>
     <div class="authRegisterContainer">
         <div class="authRegisterContainerInner">
-            <h2 class="authRegisterTitle">Sign Up</h2>
-            <div class="authRegisterBody">
-                <form class="authRegisterForm" @submit.prevent>
-                    <input type="text" placeholder="Username" v-model="username">
-                    <input type="password" placeholder="Password" v-model="password">
-                    <button @click="clickSignUp">Sign Up</button>
-                </form>
-            </div>
-            <div class="authRegisterRedirect">
-                <RouterLink to="/login" class="authRegisterRedirectLink">Already have an account?</RouterLink>
-            </div>
+            <h2 class="authRegisterTitle" v-if="localStorageAccess">You are already signed in</h2>
+            <template v-else>
+                <h2 class="authRegisterTitle">Sign Up</h2>
+                <div class="authRegisterBody">
+                    <form class="authRegisterForm" @submit.prevent>
+                        <input type="text" placeholder="Username" v-model="username">
+                        <input type="password" placeholder="Password" v-model="password">
+                        <button @click="clickSignUp">Sign Up</button>
+                        <span class="authMessageError" v-if="errorRegister">{{ errorRegister }}</span>
+                        <span class="authMessageSuccessful" v-if="successfulRegister">Successful Register</span>
+                    </form>
+                </div>
+                <div class="authRegisterRedirect">
+                    <RouterLink to="/login" class="authRegisterRedirectLink">Already have an account?</RouterLink>
+                </div>
+            </template>
         </div>
     </div>
 </template>
@@ -90,6 +107,16 @@ async function clickSignUp() {
                     padding: 0 25px;
                     font-size: 18px;
                     align-self: flex-end;
+                }
+
+                .authMessageError{
+                    color: #d62020;
+                    font-size: 18px;
+                }
+
+                .authMessageSuccessful{
+                    color: #26db73;
+                    font-size: 18px;
                 }
             }
         }

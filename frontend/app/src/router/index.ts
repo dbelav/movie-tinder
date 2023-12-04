@@ -8,6 +8,7 @@ import Favorites from "../views/favorites/Favorites.vue";
 import Tinder from '../views/tinder/Tinder.vue'
 import SignUp from '../components/signUp/SignUp.vue'
 import SignIn from '../components/signIn/SignIn.vue'
+import TinderRoom from '../views/tinderRoom/TinderRoom.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,10 @@ const router = createRouter({
     {
       path: '/tinder',
       component: Tinder
+    },
+    {
+      path: '/tinder/:id',
+      component: TinderRoom
     },
   ],
 });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import { useHttp } from '../../hooks/useHtpp'
-import MovieCard from '../../components/movieCard/MovieCard.vue'
+import SignIn from '../../components/signIn/SignIn.vue'
+import { useHttp } from '../../hooks/useHtpp'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import { onMounted, ref } from 'vue'
 import { useTinder } from '../../stores/tinder'
@@ -8,8 +8,10 @@ import vSelect from "vue-select";
 import type { MoviesGenres } from '../../types/moviesGenres'
 import type { MoviesList } from '../../types/moviesList'
 import "vue-select/dist/vue-select.css";
+import { useStorage } from '@vueuse/core'
+import { RouterLink } from 'vue-router';
 
-// const { request } = useHttp()
+
 interface FilterParamsInner {
     name: string,
     url: string,
@@ -19,8 +21,12 @@ type FilterParams = {
     [key: string]: FilterParamsInner;
 };
 
-
+const { request } = useHttp()
 const store = useTinder()
+const localStorageAccess = useStorage('access_token', '');
+const urlRoom = ref<string>('')
+const roomId = ref<string>('')
+const BASE_URL_API = 'https://moviesdatabase.p.rapidapi.com/titles?'
 
 onMounted(async () => {
     await UseGetMovieData<MoviesGenres>('https://moviesdatabase.p.rapidapi.com/titles/utils/genres',
@@ -43,12 +49,12 @@ const filterParams = ref<FilterParams>({
     },
     currentGenreSearch: {
         name: 'By Genre',
-        url: 'genre=',
+        url: '&genre=',
         value: ''
     },
     currentListSearch: {
         name: 'By List',
-        url: 'list=',
+        url: '&list=',
         value: ''
     }
 });
@@ -59,10 +65,23 @@ async function searchByParams(urlApi: string) {
     for (const key in filterParams.value) {
         const item = filterParams.value[key]
         if (item.value) {
-            urlParams += `&${item.url}${item.value}`
+            urlParams += `${item.url}${item.value}`
         }
     }
-console.log(urlParams)
+
+    const response = await request('http://localhost:8000/movies/tinder/lobby/create', 'POST', JSON.stringify({
+        "film_api_url": BASE_URL_API + urlParams
+    }), {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorageAccess.value}`
+
+    });
+    if (response.message) {
+        urlRoom.value = 'http://localhost:5173/tinder/' + response.lobby_id
+        roomId.value = response.lobby_id
+    }
+
+    console.log(urlRoom.value)
 
 }
 
@@ -71,24 +90,36 @@ console.log(urlParams)
 <template>
     <div class="tinderContainer" v-if="store.moviesGenresData && store.moviesListData">
         <div class="tinderContainerInner">
-            <h2>Select options</h2>
-            <form class="tinderSelect" @submit.prevent>
+            <SignIn v-if="!localStorageAccess"/>
+            <template v-else>
+                <h2>Select options</h2>
+                <form class="tinderSelect" @submit.prevent>
 
-                <div class="movieSortingDropDownList">
-                    <v-select v-model="filterParams.currentGenreSearch.value" :options="store.filterNullGenresData"
-                        placeholder="Select Genre" label="name"></v-select>
+                    <div class="movieSortingDropDownList">
+                        <v-select v-model="filterParams.currentGenreSearch.value" :options="store.filterNullGenresData"
+                            placeholder="Select Genre" label="name"></v-select>
+                    </div>
+                    <div class="movieSortingDropDownList">
+                        <v-select v-model="filterParams.currentListSearch.value" :options="store.moviesListData.results"
+                            label="label" placeholder="Select List Item"></v-select>
+                    </div>
+                    <div class="tinderSelectYear">
+                        <input class="tinderInput" placeholder="From Year" v-model="filterParams.searchFromYear.value">
+                    </div>
+                    <div class="tinderCreateRoom">
+                        <button class="movieSortingButton" @click="searchByParams">Create Room</button>
+                    </div>
+                </form>
+
+                <div class="tinderRoomUrl" v-if="urlRoom">
+                    <h2>Copy this and send your friend</h2>
+                    <input class="tinderInput" type="text" v-model="urlRoom">
+                    <RouterLink :to="`/tinder/${roomId}`" class="tinderRoomLink">
+                        Go to Lobby
+                    </RouterLink>
                 </div>
-                <div class="movieSortingDropDownList">
-                    <v-select v-model="filterParams.currentListSearch.value" :options="store.moviesListData.results"
-                        label="label" placeholder="Select List Item"></v-select>
-                </div>
-                <div class="tinderSelectYear">
-                    <input placeholder="From Year" v-model="filterParams.searchFromYear.value">
-                </div>
-                <div class="tinderCreateRoom">
-                    <button class="movieSortingButton" @click="searchByParams">Create Room</button>
-                </div>
-            </form>
+            </template>
+
         </div>
     </div>
 </template>
@@ -101,6 +132,22 @@ console.log(urlParams)
 
     .tinderContainerInner {
         width: 90%;
+
+        .tinderInput {
+            height: 30px;
+            background-color: #31303b;
+            border: 1px solid #ffffff3d;
+            border-radius: 8px;
+            padding: 26px;
+            font-size: 18px;
+            color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+
+            &::placeholder {
+                color: #fff;
+            }
+        }
 
         h2 {
             color: #fff;
@@ -116,25 +163,9 @@ console.log(urlParams)
             .tinderSelectYear {
                 width: 30%;
 
-                input {
-                    height: 30px;
-                    background-color: #31303b;
-                    border: 1px solid #ffffff3d;
-                    border-radius: 8px;
-                    padding: 26px;
-                    font-size: 18px;
-                    color: #fff;
-                    width: 100%;
-                    box-sizing: border-box;
-
-                    &::placeholder {
-                        color: #fff;
-                    }
-
-                }
             }
 
-            .tinderCreateRoom{
+            .tinderCreateRoom {
                 width: 100%;
                 display: flex;
                 justify-content: center;
@@ -196,7 +227,25 @@ console.log(urlParams)
                     }
                 }
             }
+        }
 
+        .tinderRoomUrl {
+            display: flex;
+            justify-content: center;
+            margin-top: 60px;
+            flex-direction: column;
+            align-items: center;
+
+            .tinderInput {
+                width: 600px;
+            }
+
+            .tinderRoomLink {
+                margin-top: 60px;
+                font-weight: 600;
+                color: #fff;
+                font-size: 22px;
+            }
         }
     }
 }

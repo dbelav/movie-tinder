@@ -2,7 +2,11 @@
 import { RouterLink, useRoute } from 'vue-router';
 import BurgerNavbar from '../../assets/BurgerNavbar.vue';
 import { defineProps } from 'vue';
+import { useStorage } from '@vueuse/core'
 
+
+const localStorageAccess = useStorage('access_token', '');
+const localStorageRefresh = useStorage('refresh_token', '')
 const props = defineProps(['isOpenLeftNavbar', 'toggleNavbar'])
 const route = useRoute();
 
@@ -38,6 +42,11 @@ const optionRoutes = [
     },
 ]
 
+function logOut(){
+    localStorageAccess.value = ''
+    localStorageRefresh.value = ''
+}
+
 </script>
 
 <template>
@@ -52,14 +61,13 @@ const optionRoutes = [
                         <RouterLink :to="item.url" class="leftNavbarContainerGeneral"
                             :class="{ 'active': isRouteActive(item.url), 'leftNavbarContainerGeneralOpen': props.isOpenLeftNavbar }">
                             <img :src="item.img" />
-                            <span :class="{ 'leftNavbarLinksItemShow': props.isOpenLeftNavbar }">{{ item.name }}</span>
+                            <span>{{ item.name }}</span>
                         </RouterLink>
                     </template>
                 </div>
 
-                <div class="leftNavbarSettingLogout">
-                    <div class="leftNavbarSettingLink leftNavbarContainerGeneral">Setting</div>
-                    <div class="leftNavbarLogoutLink leftNavbarContainerGeneral">Logout</div>
+                <div class="leftNavbarSettingLogout" :class="{ 'leftNavbarSettingLogoutOpen': props.isOpenLeftNavbar }">
+                    <button class="leftNavbarLogoutLink leftNavbarContainerGeneral" @click="logOut">Logout</button>
                 </div>
             </div>
         </div>
@@ -70,12 +78,11 @@ const optionRoutes = [
 .leftNavbarContainer {
     width: 120px;
     height: 100vh;
-    // background-color: #21201E;
     background-color: #14131a;
     display: flex;
     color: #fff;
     font-size: 18px;
-    box-shadow: 2px 0px 90px 0px #6100C266;
+    box-shadow: 2px 0px 90px 0px #6100C266; 
     position: fixed;
     transition: 0.3s;
     z-index: 3;
@@ -138,12 +145,37 @@ const optionRoutes = [
                     img {
                         width: 32px;
                     }
-
                 }
 
                 .leftNavbarContainerGeneral.active {
                     background-color: #333;
                 }
+            }
+        }
+
+        .leftNavbarSettingLogout {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+
+            button {
+                display: none;
+                padding: 10px;
+                text-decoration: none;
+                color: #fff;
+                font-weight: 700;
+                transition: 0.3s;
+                background-color: transparent;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+            }
+        }
+
+        .leftNavbarSettingLogoutOpen {
+
+            button {
+                display: block;
             }
         }
     }
@@ -152,7 +184,6 @@ const optionRoutes = [
 .leftNavbarContainerOpen {
     width: 200px;
 }
-
 
 
 @media screen and (max-width: 950px) {

@@ -7,37 +7,54 @@ import { useStorage } from '@vueuse/core'
 
 const username = ref('')
 const password = ref('')
-const localStorage = useStorage('userId', '');
+const errorLogin = ref('')
+const localStorageAccess = useStorage('access_token', '');
+const localStorageRefresh = useStorage('refresh_token', '');
 const { request } = useHttp()
 
 
 async function clickSignIn() {
+
     const response = await request('http://localhost:8000/auth/login', 'POST', JSON.stringify({
         username: username.value,
         password: password.value,
     }));
-    if (response.message === 'OK!') {
-        localStorage.value = response.user_id
+    console.log(response)
+    if (response.message) {
+        localStorageAccess.value = response.access_token
+        localStorageRefresh.value = response.refresh_token
+        errorLogin.value = ''
     }
-
+    else if(response.status === 422){
+        errorLogin.value = 'Validation Error'
+        successfulLogin.value = false
+    } 
+    else if(response.status === 400){
+        errorLogin.value = 'Not found'
+        successfulLogin.value = false
+    }
 }
 </script>
 
 <template>
     <div class="authLoginContainer">
         <div class="authLoginContainerInner">
-            <h2 class="authLoginTitle">Sign In</h2>
-            <div class="authLoginBody">
-                <form class="authLoginForm" @submit.prevent>
-                    <input type="text" placeholder="Username" v-model="username">
-                    <input type="password" placeholder="Password" v-model="password">
-                    <button @click="clickSignIn">Sign In</button>
-                </form>
-            </div>
-            <div class="authLoginRedirect">
-                <RouterLink to="/register" class="authLoginRedirectLink">Don`t have an account?</RouterLink>
-            </div>
+            <h2 class="authLoginTitle" v-if="localStorageAccess">You are already signed in</h2>
+            <template v-else>
 
+                <h2 class="authLoginTitle">Sign In</h2>
+                <div class="authLoginBody">
+                    <form class="authLoginForm" @submit.prevent>
+                        <input type="text" placeholder="Username" v-model="username">
+                        <input type="password" placeholder="Password" v-model="password">
+                        <button @click="clickSignIn">Sign In</button>
+                        <span class="authMessageError" v-if="errorLogin">{{ errorLogin }}</span>
+                    </form>
+                </div>
+                <div class="authLoginRedirect">
+                    <RouterLink to="/register" class="authLoginRedirectLink">Don`t have an account?</RouterLink>
+                </div>
+            </template>
         </div>
     </div>
 </template>
@@ -96,6 +113,11 @@ async function clickSignIn() {
                     padding: 0 25px;
                     font-size: 18px;
                     align-self: flex-end;
+                }
+
+                .authMessageError{
+                    color: #d62020;
+                    font-size: 18px;
                 }
             }
         }
