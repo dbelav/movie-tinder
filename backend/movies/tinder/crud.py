@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 from db.database import SessionLocal
-from .models import Lobby, LobbyParticipant
+from .models import Lobby, LobbyParticipant, LobbyMovieMatch
 
 
 class TinderCRUD:
@@ -42,3 +43,30 @@ class TinderCRUD:
             pass
 
         return response
+
+    def create_movie_match(self, user_id, lobby_id, movie_id):
+        response = {
+            "status": False,
+        }
+        try:
+            match = LobbyMovieMatch(user_id=user_id, lobby_id=lobby_id, movie_id=movie_id)
+            self._session.add(match)
+            self._session.commit()
+            response["status"] = True
+        except:
+            pass
+
+        return response
+
+    def is_match(self, lobby_id):
+        match = False
+        movie_id = None
+        matches = self._session.query(LobbyMovieMatch).filter_by(lobby_id=lobby_id)
+        matches = matches.with_entities(LobbyMovieMatch.movie_id, func.count(LobbyMovieMatch.movie_id)).group_by(LobbyMovieMatch.movie_id).all()
+
+        for i in matches:
+            if i[1] > 1:
+                match = True
+                movie_id = i[0]
+
+        return {"match": match, "movie_id": movie_id}

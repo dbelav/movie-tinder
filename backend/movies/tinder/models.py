@@ -17,10 +17,24 @@ class LobbyParticipant(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    lobby_id = Column(UUID(as_uuid=True), ForeignKey("lobbies.id"),)
+    lobby_id = Column(UUID(as_uuid=True), ForeignKey("lobbies.id"))
 
     user_id = Column(Integer, ForeignKey("users.id"))
 
     __table_args__ = (
         UniqueConstraint("user_id", "lobby_id"),
     )
+
+
+class LobbyMovieMatch(Base):
+    __tablename__ = "lobby_movie_matches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    lobby_id = Column(UUID(as_uuid=True), ForeignKey("lobbies.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    movie_id = Column(String)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "lobby_id", "movie_id"),
+    )
+
