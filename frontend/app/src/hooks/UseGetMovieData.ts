@@ -10,7 +10,7 @@ export async function UseGetMovieData<T>(url: string, loading: Function, getData
     loading()
 
     const response = await request(url) as ApiRespons<T>
-    // console.log(getData)    
+    console.log(response)    
 
     if ((await response).results) {
         console.log(getData)    

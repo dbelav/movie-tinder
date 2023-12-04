@@ -26,7 +26,7 @@ const store = useTinder()
 const localStorageAccess = useStorage('access_token', '');
 const urlRoom = ref<string>('')
 const roomId = ref<string>('')
-const BASE_URL_API = 'https://moviesdatabase.p.rapidapi.com/titles?'
+const BASE_URL_API = 'https://moviesdatabase.p.rapidapi.com/titles?limit=50'
 
 onMounted(async () => {
     await UseGetMovieData<MoviesGenres>('https://moviesdatabase.p.rapidapi.com/titles/utils/genres',
@@ -44,7 +44,7 @@ onMounted(async () => {
 const filterParams = ref<FilterParams>({
     searchFromYear: {
         name: 'From Year',
-        url: 'startYear=',
+        url: '&startYear=',
         value: ''
     },
     currentGenreSearch: {
@@ -162,7 +162,6 @@ async function searchByParams(urlApi: string) {
 
             .tinderSelectYear {
                 width: 30%;
-
             }
 
             .tinderCreateRoom {

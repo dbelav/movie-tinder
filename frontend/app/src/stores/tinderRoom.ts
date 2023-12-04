@@ -2,7 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { ApiResponseMini } from "../types/miniInfoTypes";
 
-export const useHomePageStore = defineStore("tinderRoom", () => {
+export const usetinderRoom = defineStore("tinderRoom", () => {
   const tinderMovieData = ref<ApiResponseMini>();
   const tinderMovieDataLoading = ref(true);
   const tinderMovieDataError = ref(false);

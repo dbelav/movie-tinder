@@ -11,13 +11,20 @@ import './main.scss'
 
 const favoritesStore = useFavoriteMovie()
 const isOpenLeftNavbar = ref(false)
-const localStorage = useStorage('userId', '');
+const localStorageIdUser = useStorage('userId', '');
+const localStorageAccess = useStorage('access_token', '');
 const { request } = useHttp()
 
 onMounted(async () => {
   try {
+    const responceId = await request(`http://localhost:8000/auth/me`, 'GET', null, {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorageAccess.value}`
+    })
+    console.log(responceId)
+    localStorageIdUser.value = responceId.id
     favoritesStore.loadingFavoriteMovieIds()
-    const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorage.value}`) as Promise<FavoritesApi>
+    const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorageIdUser.value}`) as Promise<FavoritesApi>
     favoritesStore.getFavoriteMovieIds(await responce)
   } catch {
     favoritesStore.errorFavoriteMovieIds()
