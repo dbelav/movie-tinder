@@ -80,7 +80,7 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
     align-items: flex-end;
     justify-content: space-between;
     position: relative;
-    border-radius: 10px;
+    border-radius: 15px;
     border: 1px;
     margin: 15px 0;
 

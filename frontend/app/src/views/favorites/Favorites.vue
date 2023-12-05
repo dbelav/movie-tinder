@@ -35,11 +35,17 @@ watch(() => favoritesStore.favoriteMoviesIdsData, async () => {
 
 <template v-if="favoritesStore.favoriteMoviesIdsData">
     <div class="favoritesContainer">
-        <div class="favoritesContainerInner">
-            <SignIn v-if="!localStorageAccess"/>
-            <template v-for="item in favoritesStore.favoriteMoviesApiData" v-else>
-                <MovieCard :dataMovie="item.results" />
-            </template>
+        <SignIn v-if="!localStorageAccess" />
+        <div class="favoritesContainerInner" v-else>
+            <h2 class="favoritesContainerTitle">Favorites</h2>
+            <div class="favoritesContainerNoData" v-if="favoritesStore.favoriteMoviesIdsData.favorites.length === 0">
+                <span>No favorites data. Add to favorite movies</span>
+            </div>
+            <div class="favoritesContainerCards" v-else>
+                <template v-for="item in favoritesStore.favoriteMoviesApiData" >
+                    <MovieCard :dataMovie="item.results" />
+                </template>
+            </div>
         </div>
 
     </div>
@@ -54,6 +60,27 @@ watch(() => favoritesStore.favoriteMoviesIdsData, async () => {
     .favoritesContainerInner {
         width: 90%;
         display: flex;
+        flex-direction: column;
+        margin-top: 50px;
+
+        .favoritesContainerTitle {
+            color: #fff;
+        }
+
+        .favoritesContainerNoData {
+            margin-top: 30px;
+
+            span {
+                color: #fff;
+                font-size: 20px;
+            }
+        }
+
+        .favoritesContainerCards{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
     }
 }
 </style>
