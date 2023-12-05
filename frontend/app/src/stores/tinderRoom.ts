@@ -6,6 +6,8 @@ export const usetinderRoom = defineStore("tinderRoom", () => {
   const tinderMovieData = ref<ApiResponseMini>();
   const tinderMovieDataLoading = ref(true);
   const tinderMovieDataError = ref(false);
+  const tinderMovieMatch = ref()
+  
 
   function getData<T extends ApiResponseMini>(payload: T) {
     tinderMovieDataLoading.value = false;
@@ -20,12 +22,18 @@ export const usetinderRoom = defineStore("tinderRoom", () => {
     tinderMovieDataError.value = true;
   }
 
+  function tinderMovieMatchGetData(payload){
+    tinderMovieMatch.value = payload
+  }
+
   return {
     tinderMovieData,
     tinderMovieDataLoading,
     tinderMovieDataError,
+    tinderMovieMatch,
     getData,
     dataLoading,
-    dataError
+    dataError,
+    tinderMovieMatchGetData
   };
 });

@@ -17,7 +17,7 @@ const localStorageUserId = useStorage('userid', '');
 const store = usetinderRoom()
 const currentMovie = ref(0)
 const likeOrDislike = ref()
-const isMatch = ref(false)
+const matchId = ref(false)
 let socket
 
 onMounted(async () => {
@@ -37,17 +37,20 @@ onMounted(async () => {
             store.dataLoading,
             store.getData,
             store.dataError)
-        console.log(store.tinderMovieData)
+            console.log(store.tinderMovieData)
+
         if (!store.tinderMovieDataError) {
             socket = new WebSocket(`ws://localhost:8000/movies/tinder/lobby/${route}`);
 
             socket.addEventListener('open', () => {
                 console.log('WebSocket connection opened');
             });
+            socket.addEventListener('message', async (event) => {
+                const responceMovieMatch = await request(`https://moviesdatabase.p.rapidapi.com/titles/${event.data}`)
+                store.tinderMovieMatchGetData(responceMovieMatch)
+            });
         }
-
     }
-
 })
 
 function clickLike() {
@@ -64,9 +67,7 @@ function clickDisLike() {
     currentMovie.value++
 }
 
-socket?.addEventListener('message', (event) => {
-    console.log(`[message] Данные получены с сервера: ${event.data}`);
-});
+
 const anim = ref(false)
 const beforeEnter = (el) => {
     anim.value = true
@@ -91,16 +92,13 @@ const leave = (el, done) => {
         el.style.transform = 'translateX(-300px)';
     }
     el.style.opacity = '0';
-    
+
     el.addEventListener('transitionend', done);
 
     console.log(3)
 };
 const afterLeave = (el) => {
     anim.value = false
-
-
-    console.log(4)
 
 };
 </script>
@@ -109,20 +107,28 @@ const afterLeave = (el) => {
 <template>
     <div class="tinderRoomContainer">
         <div class="tinderRoomContainerInner">
-            <SignIn v-if="!localStorageAccess" />
-            <template v-else-if="localStorageAccess && store.tinderMovieData">
-                <transition name="tinder-card" @before-enter="beforeEnter" @enter="enter" @leave="leave"
-                    @after-leave="afterLeave">
-                    <div :key="store.tinderMovieData.results[currentMovie].id" class="tinderRoomMovie">
-                        <MovieCard :data-movie="store.tinderMovieData.results[currentMovie]" v-if="!anim" />
-                    </div>
-                </transition>
+            <div class="tinderRoomMatch" v-if="store.tinderMovieMatch">
+                {{ console.log(store.tinderMovieMatch) }}
+                <h2>You have match on this movie</h2>
+                <MovieCard :data-movie="store.tinderMovieMatch.results" w />
+            </div>
+            <template v-else>
+                <SignIn v-if="!localStorageAccess" />
+                <template v-else-if="localStorageAccess && store.tinderMovieData">
+                    <transition name="tinder-card" @before-enter="beforeEnter" @enter="enter" @leave="leave"
+                        @after-leave="afterLeave">
+                        <div :key="store.tinderMovieData.results[currentMovie].id" class="tinderRoomMovie">
+                            <MovieCard :data-movie="store.tinderMovieData.results[currentMovie]" v-if="!anim" />
+                        </div>
+                    </transition>
 
-                <div class="tinderRoomButtons">
-                    <button class="tinderRoomButtonDisLike" @click="clickDisLike">Dislike</button>
-                    <button class="tinderRoomButtonLike" @click="clickLike">Like</button>
-                </div>
+                    <div class="tinderRoomButtons">
+                        <button class="tinderRoomButtonDisLike" @click="clickDisLike">Dislike</button>
+                        <button class="tinderRoomButtonLike" @click="clickLike">Like</button>
+                    </div>
+                </template>
             </template>
+
         </div>
     </div>
 </template>
@@ -143,7 +149,24 @@ const afterLeave = (el) => {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        // position: relative;
+        margin-top: 100px;
+
+        .tinderRoomMatch {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            h2 {
+                color: #fff;
+            }
+
+            .movieCard {
+                width: 25%;
+                height: 700px;
+            }
+
+        }
 
         .tinderRoomMovie {
             width: 100%;
@@ -158,9 +181,8 @@ const afterLeave = (el) => {
             .tinder-card-enter,
             .tinder-card-leave-to {
                 opacity: 0;
-                
+
             }
-            
 
             .tinder-card-enter-to,
             .tinder-card-leave {

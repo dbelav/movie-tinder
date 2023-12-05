@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue'
 import type { IMovie } from '../../types/miniInfoTypes'
 import { RouterLink } from 'vue-router';
 import { useStorage } from '@vueuse/core'
+// import asd from '../../assets/noImageData.jpg'
 
 
 const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
 const localStorage = useStorage('currentIdMovie', '');
+const imageSrc = ref<string>('');
 
 const formatActors = (actors: string | null) => {
     if (actors && actors.length > 3) {
@@ -21,12 +23,36 @@ const formatActors = (actors: string | null) => {
 function goToMovieInfo(id: string) {
     localStorage.value = id
 }
+
+
+onMounted(async () => {
+    imageSrc.value = await checkIsImage(props.dataMovie.primaryImage?.url);
+});
+
+async function checkIsImage(imageUrl: string | undefined): Promise<string> {
+    if (!imageUrl) {
+        return 'http://localhost:5173/src/assets/noImageData.jpg';
+    }
+
+    return new Promise<string>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            resolve(imageUrl);
+        }
+        img.onerror = () => {
+            resolve('http://localhost:5173/src/assets/noImageData.jpg');
+        }
+        img.src = imageUrl;
+    })
+}
 </script>
 
 <template>
-    <div class="movieCard" v-if="props.dataMovie.primaryImage"
-        :style="{ width: props.width, height: props.height, 'background-image': `url(${props.dataMovie.primaryImage?.url})` }">
-        <AddToFavourites class="addToFavourites" width="50px" height="50px" :id="props.dataMovie.id"/>
+    <div class="movieCard" v-if="props.dataMovie" :style="{
+        width: props.width, height: props.height,
+        'background-image': `url(${imageSrc})`
+    }">
+        <AddToFavourites class="addToFavourites" width="50px" height="50px" :id="props.dataMovie.id" />
         <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody"
             @click="goToMovieInfo(props.dataMovie.id)">
             <div class=" movieCardbodyTopContainer">

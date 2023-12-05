@@ -50,9 +50,8 @@ function checkIdMatch(id: string) {
 
 </script>
 
-<template v-if="favoriteStore.favoriteMoviesIdsData">
+<template v-if="favoriteStore.favoriteMoviesIdsData && localStorage">
     <div class="addToFavourites">
-        {{ checkIdMatch(props.id) }}
         <button class="addToFavouritesButton" :style="{ width: props.width, height: props.height }" @click="switchActive">
             <ActiveHeart v-if="isActive" />
             <Heart v-else />
