@@ -7,8 +7,9 @@ import SignIn from '../../components/signIn/SignIn.vue';
 import MovieCard from '../../components/movieCard/MovieCard.vue';
 import { usetinderRoom } from '../../stores/tinderRoom'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
-import { collapseTextChangeRangesAcrossMultipleVersions, isConstructorTypeNode } from 'typescript';
-// import { WebSocket } from 'vite';
+import type { LobbyJoin, AuthMe } from '../../types/backEndApi'
+import type { ApiResponseMini, ImovieIdApi } from '../../types/miniInfoTypes'
+
 
 const { request } = useHttp()
 const route = useRoute().path.split('/').pop();
@@ -17,27 +18,29 @@ const localStorageUserId = useStorage('userid', '');
 const store = usetinderRoom()
 const currentMovie = ref(0)
 const likeOrDislike = ref()
+const isAnimation = ref(false)
 const matchId = ref(false)
-let socket
+let socket: WebSocket
 
 onMounted(async () => {
     const response = await request(`http://localhost:8000/movies/tinder/lobby/${route}/join`, 'GET', null, {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
-    })
+    }) as Promise<LobbyJoin>
 
     const responceId = await request(`http://localhost:8000/auth/me`, 'GET', null, {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
-    })
-    localStorageUserId.value = responceId.id
+    }) as Promise<AuthMe>
 
-    if (response.message) {
-        await UseGetMovieData(response.film_api_url,
+    localStorageUserId.value = (await responceId).id.toString()
+
+    if ((await response).message) {
+        await UseGetMovieData<ApiResponseMini>((await response).film_api_url,
             store.dataLoading,
             store.getData,
             store.dataError)
-            console.log(store.tinderMovieData)
+        console.log(store.tinderMovieData)
 
         if (!store.tinderMovieDataError) {
             socket = new WebSocket(`ws://localhost:8000/movies/tinder/lobby/${route}`);
@@ -46,8 +49,10 @@ onMounted(async () => {
                 console.log('WebSocket connection opened');
             });
             socket.addEventListener('message', async (event) => {
-                const responceMovieMatch = await request(`https://moviesdatabase.p.rapidapi.com/titles/${event.data}`)
-                store.tinderMovieMatchGetData(responceMovieMatch)
+                console.log(event)
+                const responceMovieMatch = await request(`https://moviesdatabase.p.rapidapi.com/titles/${event.data}`) as Promise<ImovieIdApi>
+                console.log(responceMovieMatch)
+                store.tinderMovieMatchGetData(await responceMovieMatch)
             });
         }
     }
@@ -67,39 +72,40 @@ function clickDisLike() {
     currentMovie.value++
 }
 
-
-const anim = ref(false)
-const beforeEnter = (el) => {
-    anim.value = true
-    el.style.transform = 'translateX(0)';
-    el.style.opacity = '1';
-};
-
-const enter = (el, done) => {
-    el.style.transform = 'translateX(0)';
-    el.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-    el.style.opacity = '1';
-    done();
-
-};
-
-const leave = (el, done) => {
-    el.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-
-    if (likeOrDislike.value) {
-        el.style.transform = 'translateX(300px)';
-    } else {
-        el.style.transform = 'translateX(-300px)';
+const beforeEnter = (el: Element) => {
+    isAnimation.value = true;
+    if (el instanceof HTMLElement) {
+        el.style.transform = 'translateX(0)';
+        el.style.opacity = '1';
     }
-    el.style.opacity = '0';
-
-    el.addEventListener('transitionend', done);
-
-    console.log(3)
 };
-const afterLeave = (el) => {
-    anim.value = false
 
+const enter = (el: Element, done: () => void) => {
+    if (el instanceof HTMLElement) {
+        el.style.transform = 'translateX(0)';
+        el.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        el.style.opacity = '1';
+    }
+    done();
+};
+
+const leave = (el: Element, done: () => void) => {
+    if (el instanceof HTMLElement) {
+        el.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+
+        if (likeOrDislike.value) {
+            el.style.transform = 'translateX(300px)';
+        } else {
+            el.style.transform = 'translateX(-300px)';
+        }
+        el.style.opacity = '0';
+
+        el.addEventListener('transitionend', done);
+    }
+};
+
+const afterLeave = (el: Element) => {
+    isAnimation.value = false;
 };
 </script>
 
@@ -108,7 +114,6 @@ const afterLeave = (el) => {
     <div class="tinderRoomContainer">
         <div class="tinderRoomContainerInner">
             <div class="tinderRoomMatch" v-if="store.tinderMovieMatch">
-                {{ console.log(store.tinderMovieMatch) }}
                 <h2>You have match on this movie</h2>
                 <MovieCard :data-movie="store.tinderMovieMatch.results" w />
             </div>
@@ -118,7 +123,7 @@ const afterLeave = (el) => {
                     <transition name="tinder-card" @before-enter="beforeEnter" @enter="enter" @leave="leave"
                         @after-leave="afterLeave">
                         <div :key="store.tinderMovieData.results[currentMovie].id" class="tinderRoomMovie">
-                            <MovieCard :data-movie="store.tinderMovieData.results[currentMovie]" v-if="!anim" />
+                            <MovieCard :data-movie="store.tinderMovieData.results[currentMovie]" v-if="!isAnimation" />
                         </div>
                     </transition>
 

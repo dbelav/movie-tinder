@@ -10,8 +10,10 @@
   ],
   "compilerOptions": {
     "composite": true,
+    // "module": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "types": ["node"]
+    "types": ["vite/client"],
+    "lib": ["esnext", "dom", "dom.iterable"],
   }
 }

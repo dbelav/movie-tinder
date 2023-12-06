@@ -21,7 +21,8 @@
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
-    "@types/node": "^18.18.5",
+    "@types/dom4": "^2.0.4",
+    "@types/node": "^18.19.2",
     "@types/vue-select": "^3.16.8",
     "@vitejs/plugin-vue": "^4.4.0",
     "@vitejs/plugin-vue-jsx": "^3.0.2",

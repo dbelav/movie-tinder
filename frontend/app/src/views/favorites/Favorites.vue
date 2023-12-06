@@ -5,7 +5,7 @@ import MovieCard from '../../components/movieCard/MovieCard.vue';
 import { useStorage } from '@vueuse/core'
 import { useFavoriteMovie } from '../../stores/favorites'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
-import type { Imovie } from '../../types/miniInfoTypes'
+import type { IMovie } from '../../types/miniInfoTypes'
 import SignIn from '../../components/signIn/SignIn.vue';
 
 
@@ -16,7 +16,7 @@ const localStorage = useStorage('userId', '');
 
 async function getMoviesById() {
     favoritesStore.favoriteMoviesIdsData?.favorites.forEach(item => {
-        UseGetMovieData<Imovie>(`https://moviesdatabase.p.rapidapi.com/titles/${item.movie_id}`,
+        UseGetMovieData<IMovie>(`https://moviesdatabase.p.rapidapi.com/titles/${item.movie_id}`,
             favoritesStore.loadingFavoriteMovieIdApi,
             favoritesStore.getFavoriteMovieIdApi,
             favoritesStore.errorFavoriteMovieIdApi)
@@ -38,7 +38,7 @@ watch(() => favoritesStore.favoriteMoviesIdsData, async () => {
         <SignIn v-if="!localStorageAccess" />
         <div class="favoritesContainerInner" v-else>
             <h2 class="favoritesContainerTitle">Favorites</h2>
-            <div class="favoritesContainerNoData" v-if="favoritesStore.favoriteMoviesIdsData.favorites.length === 0">
+            <div class="favoritesContainerNoData" v-if="favoritesStore.favoriteMoviesIdsData?.favorites.length === 0">
                 <span>No favorites data. Add to favorite movies</span>
             </div>
             <div class="favoritesContainerCards" v-else>
