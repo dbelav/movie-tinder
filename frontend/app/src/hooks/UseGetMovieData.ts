@@ -9,11 +9,9 @@ const { request } = useHttp()
 export async function UseGetMovieData<T>(url: string, loading: Function, getData: Function, error: Function) {
     loading()
 
-    const response = await request(url) as ApiRespons<T>
-    console.log(response)    
+    const response = await request(url) as ApiRespons<T>  
 
     if ((await response).results) {
-        console.log(getData)    
         getData(await response)
     } else {
         error()

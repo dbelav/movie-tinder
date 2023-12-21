@@ -21,7 +21,7 @@ onMounted(async () => {
 
 <template>
     <div class="mainPage">
-        <HomeBanner :trendingMovie='store.trendingData' :loading="store.trendingDataLoading" />
+        <HomeBanner :trendingMovie='store.trendingData?.results[0]' :loading="store.trendingDataLoading" />
         <Trending :trendingMovies='store.trendingData' :loading="store.trendingDataLoading"/>
     </div>
 </template>

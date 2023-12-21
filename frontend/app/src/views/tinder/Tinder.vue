@@ -74,8 +74,8 @@ async function searchByParams(urlApi: string) {
     }), {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
-
-    });
+    }); 
+    console.log(response)
     if (response.message) {
         urlRoom.value = 'http://localhost:5173/tinder/' + response.lobby_id
         roomId.value = response.lobby_id

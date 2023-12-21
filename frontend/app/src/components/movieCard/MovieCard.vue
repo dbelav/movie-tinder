@@ -4,19 +4,34 @@ import AddToFavourites from '../addToFavourites/AddToFavourites.vue'
 import type { IMovie } from '../../types/miniInfoTypes'
 import { RouterLink } from 'vue-router';
 import { useStorage } from '@vueuse/core'
-// import asd from '../../assets/noImageData.jpg'
 
+
+interface Actor {
+    caption: {
+        plainText: string;
+    };
+}
 
 const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
 const localStorage = useStorage('currentIdMovie', '');
 const imageSrc = ref<string>('');
 
-const formatActors = (actors: string | null) => {
-    if (actors && actors.length > 3) {
-        return actors.split(', ').slice(0, 3).join(', ') + '...';
+onMounted(async () => {
+    try {
+        imageSrc.value = await checkIsImage(props.dataMovie.primaryImage?.url);
+    } catch (error) {
+        imageSrc.value = 'http://localhost:5173/src/assets/noImageData.jpg';
+    }
+});
+
+const formatActors = (actors: Actor | null) => {
+    if (actors) {
+        if (actors.caption.plainText && actors.caption.plainText.length > 3) {
+            return actors.caption.plainText.split(', ').slice(0, 3).join(', ') + '...';
+        }
     }
     else {
-        return actors
+        return ''
     }
 };
 
@@ -24,25 +39,21 @@ function goToMovieInfo(id: string) {
     localStorage.value = id
 }
 
-
-onMounted(async () => {
-    imageSrc.value = await checkIsImage(props.dataMovie.primaryImage?.url);
-});
-
 async function checkIsImage(imageUrl: string | undefined): Promise<string> {
     if (!imageUrl) {
-        return 'http://localhost:5173/src/assets/noImageData.jpg';
+        return 'http://localhost:5173/src/assets/noImageData.jpg'
     }
 
     return new Promise<string>((resolve) => {
-        const img = new Image();
+        const img = new Image()
+
         img.onload = () => {
-            resolve(imageUrl);
+            resolve(imageUrl)
         }
-        img.onerror = () => {
+        img.onerror = (e) => {
             resolve('http://localhost:5173/src/assets/noImageData.jpg');
         }
-        img.src = imageUrl;
+        img.src = imageUrl
     })
 }
 </script>
@@ -52,15 +63,17 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
         width: props.width, height: props.height,
         'background-image': `url(${imageSrc})`
     }">
-        <AddToFavourites class="addToFavourites" width="50px" height="50px" :id="props.dataMovie.id" />
+        <AddToFavourites class="addToFavourites" :id="props.dataMovie.id" />
         <RouterLink :to="`/movies/${props.dataMovie.originalTitleText.text.replace(/\s/g, '')}`" class="movieCardbody"
             @click="goToMovieInfo(props.dataMovie.id)">
             <div class=" movieCardbodyTopContainer">
                 <h3>{{ props.dataMovie.originalTitleText.text }}</h3>
             </div>
             <div class="movieCardbodyBottomContainer">
+
                 <div class="movieCardbodyBottomContainerActors"><span>{{
-                    formatActors(props.dataMovie.primaryImage.caption.plainText) }}</span></div>
+                    formatActors(props.dataMovie.primaryImage)
+                }}</span></div>
                 <div class="movieCardbodyBottomContainerYear">{{ props.dataMovie.releaseDate?.year }}</div>
             </div>
 
@@ -87,8 +100,8 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
     .addToFavourites {
         display: none;
         position: absolute;
-        right: 15px;
-        top: 15px;
+        right: 10px;
+        top: 10px;
     }
 
     &:hover {
@@ -124,6 +137,8 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
 
             h3 {
                 margin: 0;
+                margin-top: 10px;
+                font-size: 28px;
                 margin-bottom: 5px;
                 padding-left: 0 5px;
                 transition: opacity 0.9s;
@@ -158,18 +173,59 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
 @media screen and (max-width: 1780px) {
     .movieCard {
         height: 350px;
+
+        .movieCardbody {
+            .movieCardbodyTopContainer {
+                h3 {
+                    font-size: 24px;
+                    margin-top: 20px;
+                }
+            }
+        }
     }
 }
 
 @media screen and (max-width: 1550px) {
     .movieCard {
         height: 300px;
+
+        .movieCardbody {
+            .movieCardbodyTopContainer {
+                h3 {
+                    font-size: 23px;
+
+                }
+            }
+        }
     }
 }
 
 @media screen and (max-width: 1368px) {
     .movieCard {
         height: 250px;
+
+        .movieCardbody {
+            .movieCardbodyTopContainer {
+                height: 60%;
+
+                h3 {
+                    font-size: 20px;
+                    margin-top: 30px;
+                }
+            }
+
+            .movieCardbodyBottomContainer {
+                height: 40%;
+
+                .movieCardbodyBottomContainerActors {
+                    font-size: 14px;
+                }
+
+                .movieCardbodyBottomContainerYear {
+                    font-size: 15px;
+                }
+            }
+        }
     }
 }
 
@@ -182,12 +238,48 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
 @media screen and (max-width: 950px) {
     .movieCard {
         height: 220px;
+
+        .movieCardbody {
+            .movieCardbodyTopContainer {
+                h3 {
+                    font-size: 17px;
+                }
+            }
+
+            .movieCardbodyBottomContainer {
+                .movieCardbodyBottomContainerActors {
+                    font-size: 13px;
+                }
+
+                .movieCardbodyBottomContainerYear {
+                    font-size: 14px;
+                }
+            }
+        }
     }
 }
 
 @media screen and (max-width: 800px) {
     .movieCard {
         height: 200px;
+
+        .movieCardbody {
+            .movieCardbodyTopContainer {
+                h3 {
+                    font-size: 15px;
+                }
+            }
+
+            .movieCardbodyBottomContainer {
+                .movieCardbodyBottomContainerActors {
+                    font-size: 12px;
+                }
+
+                .movieCardbodyBottomContainerYear {
+                    font-size: 13px;
+                }
+            }
+        }
     }
 }
 
@@ -207,7 +299,28 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
 @media screen and (max-width: 450px) {
     .movieCard {
         height: 150px;
-        width: 30%;
+
+        .movieCardbody {
+            .movieCardbodyTopContainer {
+                h3 {
+                    margin-top: 70px;
+                    height: 70%;
+                    font-size: 14px;
+                }
+            }
+
+            .movieCardbodyBottomContainer {
+                justify-content: flex-end;
+                height: 30%;
+
+                .movieCardbodyBottomContainerActors {
+                    display: none;
+                }
+
+                .movieCardbodyBottomContainerYear {
+                    margin-bottom: 0;
+                }
+            }
+        }
     }
-}
-</style>
+}</style>

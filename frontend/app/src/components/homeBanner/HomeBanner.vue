@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue';
 import { defineProps } from 'vue';
-import type { ApiResponseMini } from '../../types/miniInfoTypes'
+import type { IMovie } from '../../types/miniInfoTypes'
 import { RouterLink, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core'
 import { Skeletor } from "vue-skeletor";
 import "vue-skeletor/dist/vue-skeletor.css";
 
 
-const props = defineProps<{ trendingMovie: ApiResponseMini | undefined, loading: boolean }>();
+const props = defineProps<{ trendingMovie: IMovie | undefined, loading: boolean }>();
 const localStorage = useStorage('currentIdMovie', '');
 
 function goToMovieInfo(id: string) {
@@ -19,20 +19,20 @@ function goToMovieInfo(id: string) {
 <template>
   <Skeletor class="homeBannerLoading" v-if="props.loading" />
 
-  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.results[0].primaryImage?.url})` }"
+  <div class="homeBanner" :style="{ backgroundImage: `url(${props.trendingMovie.primaryImage?.url})` }"
     v-if="!props.loading && props.trendingMovie">
     <div class="homeBannerBody">
       <div class="homeBannerBodyTitle">
-        <span>{{ props.trendingMovie.results[0].originalTitleText.text }}</span>
+        <span>{{ props.trendingMovie.originalTitleText.text }}</span>
       </div>
       <div class="homeBannerBodyInfo">
       </div>
       <div class="homeBannerBodyLink">
         <div class="homeBannerBodyLinkButton">
-          <RouterLink :to="`/movies/${props.trendingMovie.results[0].originalTitleText.text.replace(/\s/g, '')}`"
-            @click="goToMovieInfo(props.trendingMovie.results[0].id)">Watch Now</RouterLink>
+          <RouterLink :to="`/movies/${props.trendingMovie.originalTitleText.text.replace(/\s/g, '')}`"
+            @click="goToMovieInfo(props.trendingMovie.id)">Watch Now</RouterLink>
         </div>
-        <AddToFavourites />
+        <AddToFavourites :id="props.trendingMovie.id"/>
       </div>
     </div>
   </div>

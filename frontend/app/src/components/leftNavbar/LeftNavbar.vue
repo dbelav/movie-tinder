@@ -42,7 +42,7 @@ const optionRoutes = [
     },
 ]
 
-function logOut(){
+function logOut() {
     localStorageAccess.value = ''
     localStorageRefresh.value = ''
 }
@@ -66,8 +66,16 @@ function logOut(){
                     </template>
                 </div>
 
-                <div class="leftNavbarSettingLogout" :class="{ 'leftNavbarSettingLogoutOpen': props.isOpenLeftNavbar }">
-                    <button class="leftNavbarLogoutLink leftNavbarContainerGeneral" @click="logOut">Logout</button>
+                <div class="leftNavbarSettingLogout" :class="{ 'leftNavbarSettingLogoutOpen': props.isOpenLeftNavbar }"
+                    v-if="!localStorageAccess">
+                    <RouterLink to="/login" class="leftNavbarLoginLink leftNavbarContainerGeneral" @click="logOut">
+                        Sign In
+                    </RouterLink>
+                </div>
+
+                <div class="leftNavbarSettingLogout" :class="{ 'leftNavbarSettingLogoutOpen': props.isOpenLeftNavbar }"
+                    v-else>
+                    <button class="leftNavbarLoginLink leftNavbarContainerGeneral" @click="logOut">Logout</button>
                 </div>
             </div>
         </div>
@@ -82,7 +90,7 @@ function logOut(){
     display: flex;
     color: #fff;
     font-size: 18px;
-    box-shadow: 2px 0px 90px 0px #6100C266; 
+    box-shadow: 2px 0px 90px 0px #6100C266;
     position: fixed;
     transition: 0.3s;
     z-index: 3;
@@ -112,7 +120,6 @@ function logOut(){
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-
 
                 .leftNavbarContainerGeneral {
                     padding: 10px;
@@ -158,7 +165,7 @@ function logOut(){
             justify-content: center;
             margin-bottom: 50px;
 
-            button {
+            .leftNavbarLoginLink {
                 display: none;
                 padding: 10px;
                 text-decoration: none;
@@ -174,7 +181,7 @@ function logOut(){
 
         .leftNavbarSettingLogoutOpen {
 
-            button {
+            .leftNavbarLoginLink {
                 display: block;
             }
         }
@@ -240,7 +247,7 @@ function logOut(){
             }
         }
     }
-
+    
     .leftNavbarContainerOpen {
         width: 150px;
         background-color: #14131a;

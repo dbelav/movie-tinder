@@ -8,6 +8,7 @@ import type { MoviesGenres } from '../../types/moviesGenres'
 import type { MoviesList } from '../../types/moviesList'
 import type { ApiResponseMini } from '../../types/miniInfoTypes'
 import { Skeletor } from "vue-skeletor";
+import UseCreateInvisibleCards from '../../hooks/UseCreateInvisibleCards.vue'
 import "vue-skeletor/dist/vue-skeletor.css";
 
 
@@ -61,10 +62,11 @@ async function clickPreviousPage() {
             <Skeletor v-if="store.moviesListLoading || store.moviesGenresLoading" class="listMoviesContainerInnerLoading" />
             <MovieSorting v-else-if="!store.moviesListLoading || !store.moviesGenresLoading" />
             <div class="listMovies">
-                <Skeletor class="listMoviesLoading" v-if="store.moviesLoading" v-for="item in 15"/>
+                <Skeletor class="listMoviesLoading" v-if="store.moviesLoading" v-for="item in 15" />
                 <template v-for="movie in store.moviesData?.results" v-else-if="!store.moviesLoading">
-                    <MovieCard :dataMovie="movie" width="18%" />
+                    <MovieCard :dataMovie="movie" />
                 </template>
+                <UseCreateInvisibleCards />
             </div>
             <div class="listMoviesPagination">
                 <button @click="clickPreviousPage">Previous</button>
@@ -89,7 +91,7 @@ async function clickPreviousPage() {
 
     .listMoviesContainerInner {
         width: 90%;
-        
+
         .listMoviesLoading {
             height: 300px;
             width: 18%;

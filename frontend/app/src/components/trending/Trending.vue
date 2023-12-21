@@ -3,6 +3,7 @@ import MovieCard from '../movieCard/MovieCard.vue';
 import { defineProps } from 'vue';
 import { ApiResponseMini } from '../../types/miniInfoTypes'
 import { Skeletor } from "vue-skeletor";
+import UseCreateInvisibleCards from '../../hooks/UseCreateInvisibleCards.vue';
 import "vue-skeletor/dist/vue-skeletor.css";
 
 
@@ -15,12 +16,12 @@ const props = defineProps<{ trendingMovies: ApiResponseMini | undefined, loading
         <div class="trendingContainer">
             <h2>Trending</h2>
             <div class="trendingContainerCards">
-                <Skeletor v-if="props.loading" v-for="item in 10" class="trendingContainerCardsLoading"/>
+                <Skeletor v-if="props.loading" v-for="item in 10" class="trendingContainerCardsLoading" />
 
                 <template v-else-if="!props.loading && props.trendingMovies">
-                    <MovieCard :dataMovie="movie" :loading="props.loading" v-for="(movie, index) in props.trendingMovies.results"
-                        :key="index" />
-                    <div class="trendingContainerCardsInvisible"></div>
+                    <MovieCard :dataMovie="movie" :loading="props.loading"
+                        v-for="(movie, index) in props.trendingMovies.results" :key="index" />
+                    <UseCreateInvisibleCards />
                 </template>
             </div>
         </div>
@@ -49,7 +50,7 @@ const props = defineProps<{ trendingMovies: ApiResponseMini | undefined, loading
             flex-wrap: wrap;
             justify-content: space-between;
 
-            .trendingContainerCardsLoading{
+            .trendingContainerCardsLoading {
                 width: 18%;
                 height: 300px;
                 border-radius: 15px;

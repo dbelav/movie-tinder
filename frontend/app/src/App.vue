@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUpdated, ref } from 'vue'
 import LeftNavbar from './components/leftNavbar/LeftNavbar.vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useFavoriteMovie } from './stores/favorites'
 import { useHttp } from './hooks/useHtpp'
 import type { FavoritesApi } from './types/favorites'
+import type { AuthMe } from './types/backEndApi'
 import './main.scss'
 
 
@@ -15,21 +16,32 @@ const localStorageIdUser = useStorage('userId', '');
 const localStorageAccess = useStorage('access_token', '');
 const { request } = useHttp()
 
-onMounted(async () => {
-  try {
-    const responceId = await request(`http://localhost:8000/auth/me`, 'GET', null, {
+async function authFavorites() {
+  if (localStorageAccess.value) {
+    try {
+      const responceId = await request(`http://localhost:8000/auth/me`, 'GET', null, {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
-    })
-    console.log(responceId)
-    localStorageIdUser.value = responceId.id
-    favoritesStore.loadingFavoriteMovieIds()
-    const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorageIdUser.value}`) as Promise<FavoritesApi>
-    favoritesStore.getFavoriteMovieIds(await responce)
-  } catch {
-    favoritesStore.errorFavoriteMovieIds()
+      }) as Promise<AuthMe>
+
+      localStorageIdUser.value = (await responceId).id.toString()
+      favoritesStore.loadingFavoriteMovieIds()
+
+      const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorageIdUser.value}`) as Promise<FavoritesApi>
+      favoritesStore.getFavoriteMovieIds(await responce)
+    } catch (e) {
+      favoritesStore.errorFavoriteMovieIds()
+    }
   }
+}
+onMounted(async () => {
+  await authFavorites()
 })
+
+onUpdated(async () => {
+  await authFavorites()
+})
+
 
 function toggleNavbar() {
   isOpenLeftNavbar.value = !isOpenLeftNavbar.value;
@@ -39,10 +51,12 @@ function toggleNavbar() {
 
 <template>
   <div class="app">
-
     <LeftNavbar :isOpenLeftNavbar="isOpenLeftNavbar" :toggleNavbar="toggleNavbar" />
     <div class="appMainContainer" :class="{ 'appMainContainerOpen': isOpenLeftNavbar }">
       <RouterView />
+      <div class="favoritesPopUpWindow" v-if="favoritesStore.favoriteMoviePopUp">
+        You need to login to use favorites
+      </div>
     </div>
   </div>
 </template>
@@ -57,14 +71,35 @@ function toggleNavbar() {
       rgb(25 25 33) 100%);
   min-height: 100vh;
 
+
+
+
   .appMainContainer {
     width: 100%;
     padding-left: 120px;
     transition: 0.3s;
+    position: relative;
+
+    .favoritesPopUpWindow {
+      width: 200px;
+      background: #000;
+      border-radius: 10px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
   }
 
   .appMainContainerOpen {
     padding-left: 200px;
+
+
   }
 }
 

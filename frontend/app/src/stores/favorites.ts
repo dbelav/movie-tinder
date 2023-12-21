@@ -12,6 +12,8 @@ export const useFavoriteMovie = defineStore("favorite", () => {
   const favoriteMoviesApiLoading = ref(false);
   const favoriteMoviesApiError = ref(false);
 
+  const favoriteMoviePopUp = ref(false)
+
   function getFavoriteMovieIds(payload: FavoritesApi) {
     favoriteMoviesIdsLoading.value = false;
     favoriteMoviesIdsData.value = payload;
@@ -42,6 +44,10 @@ export const useFavoriteMovie = defineStore("favorite", () => {
     favoriteMoviesApiData.value = []
   }
 
+  function showFavoriteMoviePopUp(payload: boolean){
+    favoriteMoviePopUp.value = payload
+  }
+
   return {
     favoriteMoviesIdsData,
     favoriteMoviesIdsLoading,
@@ -55,6 +61,8 @@ export const useFavoriteMovie = defineStore("favorite", () => {
     getFavoriteMovieIdApi,
     loadingFavoriteMovieIdApi,
     errorFavoriteMovieIdApi,
-    favoriteMovieIdApiClear
+    favoriteMovieIdApiClear,
+    favoriteMoviePopUp,
+    showFavoriteMoviePopUp
   };
 });
