@@ -3,6 +3,7 @@ import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
 import { useStorage } from '@vueuse/core'
+import { API_BACKEND_URL } from '../../apiUrls/apiUrls';
 
 
 const username = ref('')
@@ -15,11 +16,10 @@ const { request } = useHttp()
 
 async function clickSignIn() {
 
-    const response = await request('http://localhost:8000/auth/login', 'POST', JSON.stringify({
+    const response = await request(`${API_BACKEND_URL}/auth/login`, 'POST', JSON.stringify({
         username: username.value,
         password: password.value,
     }));
-    console.log(response)
     if (response.message) {
         localStorageAccess.value = response.access_token
         localStorageRefresh.value = response.refresh_token
@@ -27,11 +27,9 @@ async function clickSignIn() {
     }
     else if(response.status === 422){
         errorLogin.value = 'Validation Error'
-        successfulLogin.value = false
     } 
     else if(response.status === 400){
         errorLogin.value = 'Not found'
-        successfulLogin.value = false
     }
 }
 </script>

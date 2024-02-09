@@ -7,6 +7,8 @@ import { useRouter, RouterLink } from 'vue-router'
 import { ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { Skeletor } from "vue-skeletor"
+import { API_BASE_URL } from '../../apiUrls/apiUrls'
+
 import "vue-skeletor/dist/vue-skeletor.css"
 
 
@@ -28,7 +30,7 @@ function renderPage(currentPage: number) {
 }
 
 async function getActors(page: string) {
-    await UseGetMovieData<ActorsApiResponse>(`https://moviesdatabase.p.rapidapi.com/actors?page=${page}&limit=30`,
+    await UseGetMovieData<ActorsApiResponse>(`${API_BASE_URL}/actors?page=${page}&limit=30`,
         store.isLoadingActors,
         store.getDataActors,
         store.isErrorActors
@@ -36,7 +38,7 @@ async function getActors(page: string) {
 }
 
 const navigateToPage = async (page: string) => {
-    await getActors(page);
+    await getActors(page)
     router.push(`/actors/${page}`)
     currentIdPage.value = page
 };

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import HomeBanner from '../../components/homeBanner/HomeBanner.vue';
+import HomeBanner from '../../components/homeBanner/HomeBanner.vue'
 import Trending from '../../components/trending/Trending.vue'
-import { useHomePageStore } from '../../stores/homePage';
-import { useHttp } from '../../hooks/useHtpp'
-import { UseGetMovieData } from '../../hooks/UseGetMovieData';
+import { useHomePageStore } from '../../stores/homePage'
+import { API_BASE_URL } from '../../apiUrls/apiUrls'
+import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import { onMounted } from 'vue'
-import type { ApiResponseMini } from '../../types/miniInfoTypes';
+import type { ApiResponseMini } from '../../types/miniInfoTypes'
 
 
 const store = useHomePageStore()
 
 onMounted(async () => {
-    UseGetMovieData<ApiResponseMini>('https://moviesdatabase.p.rapidapi.com/titles?startYear=2022&limit=10&list=top_boxoffice_200',
+    UseGetMovieData<ApiResponseMini>(`${API_BASE_URL}/titles?startYear=2022&limit=10&list=top_boxoffice_200`,
     store.dataLoading,
     store.getData,
     store.dataError)

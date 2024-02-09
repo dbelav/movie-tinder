@@ -3,6 +3,7 @@ import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { useHttp } from '../../hooks/useHtpp'
 import { useStorage } from '@vueuse/core'
+import { API_BACKEND_URL } from '../../apiUrls/apiUrls';
 
 
 const localStorageAccess = useStorage('access_token', '');
@@ -14,7 +15,7 @@ const successfulRegister = ref(false)
 const { request } = useHttp()
 
 async function clickSignUp() {
-    const response = await request('http://localhost:8000/auth/register', 'POST', JSON.stringify({
+    const response = await request(`${API_BACKEND_URL}/auth/register`, 'POST', JSON.stringify({
         username: username.value,
         password: password.value,
     }));

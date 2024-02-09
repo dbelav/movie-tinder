@@ -18,8 +18,6 @@ function renderGenres(genres: Genre[]): string {
     } else {
         return 'Not Data'
     }
-
-
 }
 
 function renderDirectors(directors: DirectorCategory[] | undefined | null): string {

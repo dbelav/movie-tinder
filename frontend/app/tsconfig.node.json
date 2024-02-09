@@ -10,7 +10,6 @@
   ],
   "compilerOptions": {
     "composite": true,
-    // "module": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "types": ["vite/client"],

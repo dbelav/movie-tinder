@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import { useHttp } from '../../hooks/useHtpp';
-import MovieCard from '../../components/movieCard/MovieCard.vue';
+import { onMounted, watch } from 'vue'
+import MovieCard from '../../components/movieCard/MovieCard.vue'
 import { useStorage } from '@vueuse/core'
 import { useFavoriteMovie } from '../../stores/favorites'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import type { IMovie } from '../../types/miniInfoTypes'
-import SignIn from '../../components/signIn/SignIn.vue';
+import SignIn from '../../components/signIn/SignIn.vue'
+import { API_BASE_URL } from '../../apiUrls/apiUrls'
 
-
-const localStorageAccess = useStorage('access_token', '');
+const localStorageAccess = useStorage('access_token', '')
 const localStorageRefresh = useStorage('refresh_token', '')
 const favoritesStore = useFavoriteMovie()
-const localStorage = useStorage('userId', '');
 
 async function getMoviesById() {
     favoritesStore.favoriteMoviesIdsData?.favorites.forEach(item => {
-        UseGetMovieData<IMovie>(`https://moviesdatabase.p.rapidapi.com/titles/${item.movie_id}`,
+        UseGetMovieData<IMovie>(`${API_BASE_URL}/titles/${item.movie_id}`,
             favoritesStore.loadingFavoriteMovieIdApi,
             favoritesStore.getFavoriteMovieIdApi,
             favoritesStore.errorFavoriteMovieIdApi)
@@ -29,7 +27,7 @@ onMounted(() => {
 
 watch(() => favoritesStore.favoriteMoviesIdsData, async () => {
     favoritesStore.favoriteMovieIdApiClear()
-    await getMoviesById();
+    await getMoviesById()
 })
 </script>
 

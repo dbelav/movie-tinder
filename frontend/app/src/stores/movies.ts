@@ -18,7 +18,6 @@ export const useMovies = defineStore("MovieItem", () => {
   const moviesListError = ref(false);
 
   const previousPage = ref<string[]>([]);
-  const BASE_API_URL = ref("https://moviesdatabase.p.rapidapi.com");
   const urlParams = ref(
     "/titles?limit=30&page=1"
   );
@@ -102,7 +101,6 @@ export const useMovies = defineStore("MovieItem", () => {
     setPreviousPage,
     deletePreviousPage,
     deleteAllPreviousPages,
-    BASE_API_URL,
     urlParams,
     setUrlParams,
     filterNullGenresData

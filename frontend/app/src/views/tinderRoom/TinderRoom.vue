@@ -2,11 +2,12 @@
 import { useHttp } from '../../hooks/useHtpp'
 import { useStorage } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router';
-import SignIn from '../../components/signIn/SignIn.vue';
-import MovieCard from '../../components/movieCard/MovieCard.vue';
+import { useRoute } from 'vue-router'
+import SignIn from '../../components/signIn/SignIn.vue'
+import MovieCard from '../../components/movieCard/MovieCard.vue'
 import { usetinderRoom } from '../../stores/tinderRoom'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
+import { API_BASE_URL, API_BACKEND_URL, WS_BACKEND_URL } from '../../apiUrls/apiUrls'
 import type { LobbyJoin, AuthMe } from '../../types/backEndApi'
 import type { ApiResponseMini, ImovieIdApi } from '../../types/miniInfoTypes'
 
@@ -23,12 +24,12 @@ const matchId = ref(false)
 let socket: WebSocket
 
 onMounted(async () => {
-    const response = await request(`http://localhost:8000/movies/tinder/lobby/${route}/join`, 'GET', null, {
+    const response = await request(`${API_BACKEND_URL}/movies/tinder/lobby/${route}/join`, 'GET', null, {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
     }) as Promise<LobbyJoin>
 
-    const responceId = await request(`http://localhost:8000/auth/me`, 'GET', null, {
+    const responceId = await request(`${API_BACKEND_URL}/auth/me`, 'GET', null, {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
     }) as Promise<AuthMe>
@@ -43,15 +44,13 @@ onMounted(async () => {
         console.log(store.tinderMovieData)
 
         if (!store.tinderMovieDataError) {
-            socket = new WebSocket(`ws://localhost:8000/movies/tinder/lobby/${route}`);
+            socket = new WebSocket(`${WS_BACKEND_URL}/movies/tinder/lobby/${route}`);
 
             socket.addEventListener('open', () => {
                 console.log('WebSocket connection opened');
             });
             socket.addEventListener('message', async (event) => {
-                console.log(event)
-                const responceMovieMatch = await request(`https://moviesdatabase.p.rapidapi.com/titles/${event.data}`) as Promise<ImovieIdApi>
-                console.log(responceMovieMatch)
+                const responceMovieMatch = await request(`${API_BASE_URL}/titles/${event.data}`) as Promise<ImovieIdApi>
                 store.tinderMovieMatchGetData(await responceMovieMatch)
             });
         }

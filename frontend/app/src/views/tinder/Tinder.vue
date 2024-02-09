@@ -7,9 +7,10 @@ import { useTinder } from '../../stores/tinder'
 import vSelect from "vue-select";
 import type { MoviesGenres } from '../../types/moviesGenres'
 import type { MoviesList } from '../../types/moviesList'
-import "vue-select/dist/vue-select.css";
+import "vue-select/dist/vue-select.css"
 import { useStorage } from '@vueuse/core'
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
+import { API_BASE_URL, API_BACKEND_URL } from '../../apiUrls/apiUrls'
 
 
 interface FilterParamsInner {
@@ -17,24 +18,25 @@ interface FilterParamsInner {
     url: string,
     value: string
 }
+
 type FilterParams = {
     [key: string]: FilterParamsInner;
-};
+}
 
 const { request } = useHttp()
 const store = useTinder()
 const localStorageAccess = useStorage('access_token', '');
 const urlRoom = ref<string>('')
 const roomId = ref<string>('')
-const BASE_URL_API = 'https://moviesdatabase.p.rapidapi.com/titles?limit=50'
+const BASE_URL_API = `${API_BASE_URL}/titles?limit=50`
 
 onMounted(async () => {
-    await UseGetMovieData<MoviesGenres>('https://moviesdatabase.p.rapidapi.com/titles/utils/genres',
+    await UseGetMovieData<MoviesGenres>(`${API_BASE_URL}/titles/utils/genres`,
         store.isLoadingMoviesGenres,
         store.getDataMoviesGenres,
         store.isErrorMoviesGenres
     )
-    await UseGetMovieData<MoviesList>('https://moviesdatabase.p.rapidapi.com/titles/utils/lists',
+    await UseGetMovieData<MoviesList>(`${API_BASE_URL}/titles/utils/lists`,
         store.isLoadingMoviesList,
         store.getDataMoviesList,
         store.isErrorMoviesList
@@ -59,7 +61,7 @@ const filterParams = ref<FilterParams>({
     }
 });
 
-async function searchByParams(urlApi: string) {
+async function searchByParams() {
     let urlParams = ''
 
     for (const key in filterParams.value) {
@@ -69,20 +71,16 @@ async function searchByParams(urlApi: string) {
         }
     }
 
-    const response = await request('http://localhost:8000/movies/tinder/lobby/create', 'POST', JSON.stringify({
+    const response = await request(`${API_BACKEND_URL}/movies/tinder/lobby/create`, 'POST', JSON.stringify({
         "film_api_url": BASE_URL_API + urlParams
     }), {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
-    }); 
-    console.log(response)
+    });
     if (response.message) {
         urlRoom.value = 'http://localhost:5173/tinder/' + response.lobby_id
         roomId.value = response.lobby_id
     }
-
-    console.log(urlRoom.value)
-
 }
 
 </script>

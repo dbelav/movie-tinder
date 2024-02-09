@@ -5,6 +5,7 @@ import ActiveHeart from '../../assets/ActiveHeart.vue';
 import { useStorage } from '@vueuse/core'
 import { useHttp } from '../../hooks/useHtpp';
 import { useFavoriteMovie } from '../../stores/favorites'
+import { API_BACKEND_URL } from '../../apiUrls/apiUrls';
 import type { FavoritesApi } from '../../types/favorites'
 
 
@@ -20,41 +21,41 @@ onMounted(() => {
     checkIdMatch(props.id)
 })
 
-async function refreshData() {
+async function refreshFavoritesData() {
     try {
         favoritesStore.loadingFavoriteMovieIds()
-        const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorage.value}`) as Promise<FavoritesApi>
+        const responce = await request(`${API_BACKEND_URL}/movies/favorites?user_id=${localStorage.value}`) as Promise<FavoritesApi>
         favoritesStore.getFavoriteMovieIds(await responce)
     } catch {
         favoritesStore.errorFavoriteMovieIds()
     }
 }
 
-async function favoritesDatabaseCrud(method: string) {
-    await request(`http://localhost:8000/movies/favorites`, method, JSON.stringify({
+async function favoritesDatabaseCrudOperation(method: string) {
+    await request(`${API_BACKEND_URL}/movies/favorites`, method, JSON.stringify({
         user_id: localStorage.value,
         movie_id: props.id,
     }))
 }
 
-async function switchActive() {
+function switchActive() {
     if (localStorageAccess.value) {
         favoritesStore.showFavoriteMoviePopUp(false)
-
-        if (isActive.value) {
-            await favoritesDatabaseCrud('DELETE')
-            await refreshData()
-
-            isActive.value = false
-        } else {
-            await favoritesDatabaseCrud('POST')
-            await refreshData()
-
-            isActive.value = true
-        }
-
+        favoritesChangeCrudOperationDatabase()
     } else {
         favoritesStore.showFavoriteMoviePopUp(true)
+    }
+}
+
+async function favoritesChangeCrudOperationDatabase() {
+    if (isActive.value) {
+        await favoritesDatabaseCrudOperation('DELETE')
+        await refreshFavoritesData()
+
+        isActive.value = false
+    } else {
+        await favoritesDatabaseCrudOperation('POST')
+        await refreshFavoritesData()
     }
 }
 
@@ -69,10 +70,10 @@ function checkIdMatch(id: string) {
 }
 
 </script>
-<!-- :style="{ width: props.width, height: props.height }" -->
+
 <template v-if="favoriteStore.favoriteMoviesIdsData && localStorage">
     <div class="addToFavourites">
-        <button class="addToFavouritesButton"  @click="switchActive">
+        <button class="addToFavouritesButton" @click="switchActive">
             <ActiveHeart v-if="isActive" />
             <Heart v-else />
         </button>
@@ -98,7 +99,7 @@ function checkIdMatch(id: string) {
     .addToFavouritesButton {
         width: 40px;
         height: 40px;
-    }  
+    }
 }
 
 @media screen and (max-width: 950px) {
@@ -107,6 +108,6 @@ function checkIdMatch(id: string) {
         height: 30px;
 
     }
- 
+
 }
 </style>

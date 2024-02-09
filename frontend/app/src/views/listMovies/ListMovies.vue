@@ -9,18 +9,20 @@ import type { MoviesList } from '../../types/moviesList'
 import type { ApiResponseMini } from '../../types/miniInfoTypes'
 import { Skeletor } from "vue-skeletor";
 import UseCreateInvisibleCards from '../../hooks/UseCreateInvisibleCards.vue'
-import "vue-skeletor/dist/vue-skeletor.css";
+import { API_BASE_URL } from '../../apiUrls/apiUrls'
+
+import "vue-skeletor/dist/vue-skeletor.css"
 
 
 const store = useMovies()
 
 onMounted(async () => {
-    await UseGetMovieData<MoviesGenres>('https://moviesdatabase.p.rapidapi.com/titles/utils/genres',
+    await UseGetMovieData<MoviesGenres>(`${API_BASE_URL}/titles/utils/genres`,
         store.isLoadingMoviesGenres,
         store.getDataMoviesGenres,
         store.isErrorMoviesGenres
     )
-    await UseGetMovieData<MoviesList>('https://moviesdatabase.p.rapidapi.com/titles/utils/lists',
+    await UseGetMovieData<MoviesList>(`${API_BASE_URL}/titles/utils/lists`,
         store.isLoadingMoviesList,
         store.getDataMoviesList,
         store.isErrorMoviesList
@@ -29,7 +31,7 @@ onMounted(async () => {
 
 onMounted(async () => {
 
-    await UseGetMovieData<ApiResponseMini>(`${store.BASE_API_URL}${store.urlParams}`,
+    await UseGetMovieData<ApiResponseMini>(`${API_BASE_URL}${store.urlParams}`,
         store.isLoadingMovies,
         store.getDataMovies,
         store.isErrorMovies
@@ -38,9 +40,11 @@ onMounted(async () => {
 })
 
 async function clickNextPage() {
-    store.setPreviousPage(store.moviesData.next)
+    if(store.moviesData?.next){
+        store.setPreviousPage(store.moviesData.next)
+    }
 
-    await UseGetMovieData<ApiResponseMini>(`${store.BASE_API_URL}${store.moviesData?.next}`,
+    await UseGetMovieData<ApiResponseMini>(`${API_BASE_URL}${store.moviesData?.next}`,
         store.isLoadingMovies,
         store.getDataMovies,
         store.isErrorMovies
@@ -48,7 +52,7 @@ async function clickNextPage() {
 }
 
 async function clickPreviousPage() {
-    await UseGetMovieData<ApiResponseMini>(`${store.BASE_API_URL}${store.previousPage[1]}`,
+    await UseGetMovieData<ApiResponseMini>(`${API_BASE_URL}${store.previousPage[1]}`,
         store.isLoadingMovies,
         store.getDataMovies,
         store.isErrorMovies
@@ -56,6 +60,7 @@ async function clickPreviousPage() {
     store.deletePreviousPage()
 }
 </script>
+
 <template>
     <div class="listMoviesContainer">
         <div class="listMoviesContainerInner">

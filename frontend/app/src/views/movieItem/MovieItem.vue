@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useMovieItem } from '../../stores/movieItem';
+import { useMovieItem } from '../../stores/movieItem'
 import { onMounted } from 'vue'
-import type { ApiResponsBase } from '../../types/baseInfoTypes';
+import type { ApiResponsBase } from '../../types/baseInfoTypes'
 import MovieItemInfo from '../../components/movieItemInfo/MovieItemInfo.vue'
 import { useStorage } from '@vueuse/core'
 import type { Actors } from '../../types/actorsCast'
-import type { BudgetMovie } from "../../types/budget";
+import type { BudgetMovie } from "../../types/budget"
 import type { Directors } from '../../types/directors'
-import { UseGetMovieData } from '../../hooks/UseGetMovieData';
-
+import { UseGetMovieData } from '../../hooks/UseGetMovieData'
+import {API_BASE_URL} from '../../apiUrls/apiUrls'
 
 
 const movieStore = useMovieItem()
@@ -16,14 +16,14 @@ const movieStore = useMovieItem()
 const storage = useStorage('currentIdMovie', '');
 
 onMounted(async () => {
-    await UseGetMovieData<ApiResponsBase>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=base_info`,
+    await UseGetMovieData<ApiResponsBase>(`${API_BASE_URL}/titles/${storage.value}?info=base_info`,
         movieStore.isLoadingMovieItem,
         movieStore.getDataMovieItem,
         movieStore.isErrorMovieItem)
 })
 
 onMounted(async () => {
-    await UseGetMovieData<Actors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=extendedCast`,
+    await UseGetMovieData<Actors>(`${API_BASE_URL}/titles/${storage.value}?info=extendedCast`,
         movieStore.isLoadingActorsMovie,
         movieStore.getActorsMovie,
         movieStore.isErrorActorsMovie)
@@ -31,7 +31,7 @@ onMounted(async () => {
 })
 
 onMounted(async () => {
-    await UseGetMovieData<BudgetMovie>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=revenue_budget`,
+    await UseGetMovieData<BudgetMovie>(`${API_BASE_URL}/titles/${storage.value}?info=revenue_budget`,
         movieStore.isLoadingBudgetMovie,
         movieStore.getBudgetMovie,
         movieStore.isErrorBudgetMovie)
@@ -39,7 +39,7 @@ onMounted(async () => {
 })
 
 onMounted(async () => {
-    await UseGetMovieData<Directors>(`https://moviesdatabase.p.rapidapi.com/titles/${storage.value}?info=creators_directors_writers`,
+    await UseGetMovieData<Directors>(`${API_BASE_URL}/titles/${storage.value}?info=creators_directors_writers`,
         movieStore.isLoadingDirectorsMovie,
         movieStore.getDirectorsMovie,
         movieStore.isErrorDirectorsMovie)

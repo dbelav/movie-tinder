@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref } from 'vue';
+import { defineProps, onMounted, ref } from 'vue'
 import AddToFavourites from '../addToFavourites/AddToFavourites.vue'
-import type { IMovie } from '../../types/miniInfoTypes'
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
 import { useStorage } from '@vueuse/core'
+import type { IMovie } from '../../types/miniInfoTypes'
 
 
 interface Actor {
     caption: {
         plainText: string;
-    };
+    }
 }
 
-const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>();
-const localStorage = useStorage('currentIdMovie', '');
-const imageSrc = ref<string>('');
+const props = defineProps<{ dataMovie: IMovie, width?: string, height?: string }>()
+const localStorage = useStorage('currentIdMovie', '')
+const imageSrc = ref<string>('')
 
 onMounted(async () => {
     try {
-        imageSrc.value = await checkIsImage(props.dataMovie.primaryImage?.url);
+        imageSrc.value = await checkIsImage(props.dataMovie.primaryImage?.url)
     } catch (error) {
-        imageSrc.value = 'http://localhost:5173/src/assets/noImageData.jpg';
+        imageSrc.value = 'http://localhost:5173/src/assets/noImageData.jpg'
     }
-});
+})
 
 const formatActors = (actors: Actor | null) => {
     if (actors) {
         if (actors.caption.plainText && actors.caption.plainText.length > 3) {
-            return actors.caption.plainText.split(', ').slice(0, 3).join(', ') + '...';
+            return actors.caption.plainText.split(', ').slice(0, 3).join(', ') + '...'
         }
     }
     else {
@@ -323,4 +323,5 @@ async function checkIsImage(imageUrl: string | undefined): Promise<string> {
             }
         }
     }
-}</style>
+}
+</style>

@@ -34,7 +34,6 @@ function hideActorPhoto() {
                 @mouseover="showActorPhoto(actor.node.name.primaryImage.url)" 
                 @mouseleave="hideActorPhoto"
                 @click="localStorage = `${actor.node.name.id}`">
-                
 
                 {{ index < 5 ? (actor.node.name.nameText.text + ',') : actor.node.name.nameText.text }} </RouterLink>
         </div>

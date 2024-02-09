@@ -5,8 +5,10 @@ import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useFavoriteMovie } from './stores/favorites'
 import { useHttp } from './hooks/useHtpp'
+import { API_BACKEND_URL } from './apiUrls/apiUrls'
 import type { FavoritesApi } from './types/favorites'
 import type { AuthMe } from './types/backEndApi'
+
 import './main.scss'
 
 
@@ -19,16 +21,16 @@ const { request } = useHttp()
 async function authFavorites() {
   if (localStorageAccess.value) {
     try {
-      const responceId = await request(`http://localhost:8000/auth/me`, 'GET', null, {
+      const responceUserId = await request(`${API_BACKEND_URL}/auth/me`, 'GET', null, {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorageAccess.value}`
       }) as Promise<AuthMe>
 
-      localStorageIdUser.value = (await responceId).id.toString()
+      localStorageIdUser.value = (await responceUserId).id.toString()
       favoritesStore.loadingFavoriteMovieIds()
 
-      const responce = await request(`http://localhost:8000/movies/favorites?user_id=${localStorageIdUser.value}`) as Promise<FavoritesApi>
-      favoritesStore.getFavoriteMovieIds(await responce)
+      const responceFavoritesMovies = await request(`${API_BACKEND_URL}/movies/favorites?user_id=${localStorageIdUser.value}`) as Promise<FavoritesApi>
+      favoritesStore.getFavoriteMovieIds(await responceFavoritesMovies)
     } catch (e) {
       favoritesStore.errorFavoriteMovieIds()
     }
@@ -70,8 +72,6 @@ function toggleNavbar() {
       rgba(34, 33, 45, 1) 0%,
       rgb(25 25 33) 100%);
   min-height: 100vh;
-
-
 
 
   .appMainContainer {

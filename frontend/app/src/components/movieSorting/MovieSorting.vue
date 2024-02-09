@@ -4,8 +4,10 @@ import { ref } from 'vue'
 import type { ApiResponseMini } from '../../types/miniInfoTypes'
 import { UseGetMovieData } from '../../hooks/UseGetMovieData'
 import Delete from '../../assets/Delete.vue'
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select"
+import { API_BASE_URL } from '../../apiUrls/apiUrls'
+
+import "vue-select/dist/vue-select.css"
 
 
 interface FilterParamsInner {
@@ -13,16 +15,22 @@ interface FilterParamsInner {
     url: string,
     value: string
 }
+
 type FilterParams = {
     [key: string]: FilterParamsInner;
-};
+}
+
+interface ListItem {
+    label: string;
+    value: any;
+}
 
 const store = useMovies()
 
-const BASE_API_URL = ref('https://moviesdatabase.p.rapidapi.com/titles?limit=30&page=1')
+const BASE_API_URL = ref(`${API_BASE_URL}/titles?limit=30&page=1`)
 const searchKeyword = ref('')
-let timeoutSearch: NodeJS.Timeout | null = null
 
+let timeoutSearch: NodeJS.Timeout | null = null
 
 const filterParams = ref<FilterParams>({
     searchByYear: {
@@ -56,7 +64,8 @@ const filterParams = ref<FilterParams>({
         value: ''
     }
 
-});
+})
+
 async function searchByParams(urlApi: string) {
     store.deleteAllPreviousPages()
     let urlParams = ''
@@ -85,7 +94,7 @@ async function searchByName(urlApi: string) {
     if (searchKeyword.value.length > 0) {
         timeoutSearch = setTimeout(async () => {
             await UseGetMovieData<ApiResponseMini>(
-                `https://moviesdatabase.p.rapidapi.com/titles/search/title/${searchKeyword.value}?limit=30&page=1`,
+                `${API_BASE_URL}/titles/search/title/${searchKeyword.value}?limit=30&page=1`,
                 store.isLoadingMovies,
                 store.getDataMovies,
                 store.isErrorMovies
@@ -135,7 +144,8 @@ function formatLabel(label: string) {
                 <div class="movieSortingDropDownList">
                     <v-select v-model="filterParams.currentListItemSearch.value"
                         :options="store.moviesListData.results.map(listItem => ({ label: formatLabel(listItem), value: listItem }))"
-                        label="label" :reduce="option => option.value" placeholder="Select List Item"></v-select>
+                        label="label" :reduce="(option: ListItem) => option.value"
+                        placeholder="Select List Item"></v-select>
                 </div>
                 <div class="movieSortingDateClear">
                     <template v-for="filter in filterParams">

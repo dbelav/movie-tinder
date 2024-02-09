@@ -1,24 +1,22 @@
 <script setup lang="ts">
 import { useHttp } from '../../hooks/useHtpp'
-import { useRouter } from 'vue-router';
 import { onMounted, onUpdated } from 'vue'
-import type { ActorInfoResponce } from '../../types/actorsPage'
-import type { ApiResponseMini } from '../../types/miniInfoTypes'
 import { useActors } from '../../stores/actors'
 import { useStorage } from '@vueuse/core'
-import MovieCard from '../movieCard/MovieCard.vue';
-
+import MovieCard from '../movieCard/MovieCard.vue'
+import { API_BASE_URL } from '../../apiUrls/apiUrls'
+import type { ActorInfoResponce } from '../../types/actorsPage'
+import type { ApiResponseMini, IMovie, ImovieIdApi } from '../../types/miniInfoTypes'
 
 const { request } = useHttp()
 const store = useActors()
-const router = useRouter();
 
-const localStorage = useStorage('currentActorId', '');
+const localStorage = useStorage('currentActorId', '')
 
 onMounted(async () => {
     store.isLoadingActorInfo()
 
-    const response = await request(`https://moviesdatabase.p.rapidapi.com/actors/${localStorage.value}`) as Promise<ActorInfoResponce>
+    const response = await request(`${API_BASE_URL}/actors/${localStorage.value}`) as Promise<ActorInfoResponce>
 
     if ((await response).results) {
         store.getDataActorInfo(await response)
@@ -31,8 +29,8 @@ onUpdated(async () => {
     if (store.actorInfoData) {
 
         store.isLoadingActorTitles()
-
-        const response = await request(`https://moviesdatabase.p.rapidapi.com/titles/x/titles-by-ids?idsList=${store.actorInfoData.results.knownForTitles}`) as Promise<ApiResponseMini>
+        const urlString = `${API_BASE_URL}/titles/x/titles-by-ids?idsList=${store.actorInfoData.results.knownForTitles}`
+        const response = await request(urlString) as Promise<ApiResponseMini>
 
         if ((await response).results) {
             store.getDataActorTitles(await response)
@@ -73,14 +71,12 @@ onUpdated(async () => {
                 </div>
             </div>
             <div class="actorInfoBodyTitles" v-if="store.actorTitlesData">
-                <div class="actorInfoBodyTitlesItem" v-for="movie in store.actorTitlesData?.results">
+                <div class="actorInfoBodyTitlesItem" v-for="movie in (store.actorTitlesData?.results as unknown as ImovieIdApi)">
                     <MovieCard :dataMovie="movie" width="100%" />
                 </div>
             </div>
 
         </div>
-
-
     </div>
 </template>
 
